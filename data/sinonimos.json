@@ -1,0 +1,11 @@
+{
+  "grupos": [
+    ["aval", "codeudor", "garante", "avalista"],
+    ["link", "enlace", "url", "referencia"],
+    ["evaluar", "evaluación", "calificar", "revisar"],
+    ["postulante", "interesado", "arrendatario", "cliente"],
+    ["departamento", "depto", "propiedad", "unidad", "inmueble"],
+    ["formulario", "forma", "aplicación"],
+    ["requisito", "requerimiento", "criterio"]
+  ]
+}

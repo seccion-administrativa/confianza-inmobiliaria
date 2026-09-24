@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es-CL" data-theme="dark" data-accent="dorado">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#181c21">
+  <meta name="description" content="Centro de tutoriales para ejecutivos de Confianza Inmobiliaria">
+  <meta name="robots" content="noindex,nofollow">
+  <meta property="og:title" content="Confianza · Centro de tutoriales">
+  <meta property="og:description" content="Tutoriales en video para capacitar vendedores de arriendo">
+  <meta property="og:image" content="logo.png">
+  <title>Confianza · Tutoriales</title>
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { --dorado:#f59e0b; --verde:#10b981; --azul:#3b82f6; --rojo:#f43f5e;
+      --accent:#f59e0b; --accent-ink:#0a1530; --radius:18px;
+      --sp-2xs:.25rem; --sp-xs:.5rem; --sp-sm:.75rem; --sp-md:1rem; --sp-lg:1.5rem; --sp-xl:2.25rem;
+      --ease-out:cubic-bezier(.16,1,.3,1); --ease-in:cubic-bezier(.7,0,.84,0); }
+    html[data-accent="dorado"] { --accent:#f59e0b; --accent-ink:#1a1204; }
+    html[data-accent="verde"] { --accent:#10b981; --accent-ink:#022c22; }
+    html[data-accent="azul"] { --accent:#3b82f6; --accent-ink:#0a1530; }
+    html[data-theme="dark"] { --page:#0b0d10; --bg1:#111418; --bg2:#181c21; --surface:#1d2228; --field:#15191e;
+      --border:#333a42; --border-soft:#242a30; --title:#fff; --txt:#e6e9ee; --muted:#9aa3ad;
+      --shadow:0 20px 44px -18px rgba(0,0,0,.75); }
+    html[data-theme="light"] { --page:#eef1f8; --bg1:#f5f7fc; --bg2:#fff; --surface:#fff; --field:#f4f6fc;
+      --border:#e2e6f0; --border-soft:#eef1f8; --title:#0d1b3e; --txt:#334155; --muted:#64748b;
+      --shadow:0 16px 34px -20px rgba(13,27,62,.28); }
+    body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--page); color: var(--txt); overflow-x: clip;
+      -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
+    :focus-visible { outline: 2px solid var(--title); outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+    @media (hover: hover) { button:hover, a:hover { opacity: 0.85; } }
+
+    .app { max-width: 480px; margin: 0 auto; min-height: 100vh;
+      background: radial-gradient(120% 60% at 50% -10%, var(--bg2), var(--bg1) 60%, var(--page)); }
+
+    header { position: sticky; top: 0; z-index: 100; padding: 18px 20px 15px;
+      background: var(--bg2); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 0 linear-gradient(90deg, transparent, var(--accent), transparent), 0 0 0 transparent; }
+    .header-top { display: flex; align-items: center; justify-content: space-between; }
+    .logo { height: 40px; width: auto; }
+    .gear-btn { width: 42px; height: 42px; border-radius: 13px; border: 1px solid var(--border);
+      background: var(--surface); cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center;
+      transition: all 100ms var(--ease-out); }
+    .gear-btn:active { transform: translateY(1px); }
+
+    .search-container { margin-top: 12px; position: relative; }
+    .search-input { width: 100%; padding: 12px 15px 12px 40px; border-radius: 12px;
+      background: var(--field); border: 1px solid var(--border); color: var(--txt); font-size: 16px;
+      transition: all 150ms var(--ease-out); }
+    .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+
+    .categories { display: flex; gap: 8px; overflow-x: auto; padding: 14px 20px 0; margin-bottom: 12px;
+      scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+    .chip { padding: 7px 13px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface);
+      color: var(--txt); font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer;
+      transition: all 150ms var(--ease-out); }
+    .chip.active { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); }
+
+    .results { padding: 14px 20px 60px; }
+    .result-count { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+    .result-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .card { border-radius: 18px; border: 1px solid var(--border); background: var(--surface);
+      padding: 18px; box-shadow: var(--shadow); cursor: pointer; transition: all 180ms var(--ease-out); }
+    .card:active { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--accent); border-radius: 18px 18px 0 0; opacity: 0; transition: opacity 150ms; }
+    .card:hover::before { opacity: 1; }
+
+    .card-thumb { position: relative; width: 100%; aspect-ratio: 16/9; background: #000;
+      border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
+    .card-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .card-thumb-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.3); }
+    .card-thumb-play::after { content: '▶'; font-size: 32px; color: #fff; }
+
+    .card-title { font-size: 16px; font-weight: 800; line-height: 1.2; margin-bottom: 6px; color: var(--title); }
+    .card-category { display: inline-block; font-size: 11px; font-weight: 700; padding: 4px 10px;
+      border-radius: 999px; background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent);
+      margin-bottom: 8px; }
+    .card-desc { font-size: 13px; color: var(--txt); line-height: 1.4; margin-bottom: 8px; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag { font-size: 11px; padding: 4px 8px; border-radius: 6px; background: var(--border); color: var(--muted); }
+
+    .empty-state { text-align: center; padding: 64px 24px; }
+    .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state-title { font-size: 17px; font-weight: 700; color: var(--title); margin-bottom: 8px; }
+    .empty-state-text { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+    .btn-primary { padding: 12px 14px; border-radius: 12px; min-height: 44px;
+      background: var(--accent); color: var(--accent-ink); border: none; font-size: 13.5px; font-weight: 700;
+      cursor: pointer; transition: all 100ms var(--ease-out); }
+    .btn-primary:active { transform: translateY(1px); }
+
+    .modal { display: none; position: fixed; inset: 0; background: rgba(3,7,18,.7); z-index: 200;
+      -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+    .modal.open { display: flex; align-items: flex-end; }
+    .modal-content { width: 100%; max-width: 480px; max-height: 90vh; background: var(--bg2);
+      border-radius: 22px 22px 0 0; padding: 20px 18px 26px; overflow-y: auto;
+      animation: slideUp 220ms var(--ease-out); }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+    .player { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 18px;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 20px; margin-top: -20px; margin-left: -18px; margin-right: -18px; }
+    .player iframe { width: 100%; height: 100%; border: none; border-radius: 18px; }
+    .player-facade { cursor: pointer; }
+    .player-facade::after { content: '▶'; font-size: 56px; color: #fff; }
+
+    .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent);
+      border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    footer { text-align: center; padding: 20px 18px 30px; font-size: 11px; color: var(--muted); }
+
+    @media (min-width: 900px) {
+      .app { max-width: 1200px; display: grid; grid-template-columns: 320px 1fr;
+        grid-template-areas: "header header" "sidebar main" "footer footer"; min-height: 100vh; }
+      header { grid-area: header; position: static; }
+      .sidebar { grid-area: sidebar; position: sticky; top: 16px; max-height: calc(100vh - 32px);
+        padding: 0 16px; overflow-y: auto; }
+      .results { grid-area: main; padding: 14px 30px 60px; }
+      .result-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="header-top">
+      <img src="logo.png" alt="Confianza" class="logo">
+      <button class="gear-btn" id="gearBtn" title="Configuración">⚙️</button>
+    </div>
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="Buscar tutorial..." autocomplete="off" spellcheck="false">
+    </div>
+  </header>
+
+  <div class="categories" id="categoryContainer"></div>
+
+  <main class="results" id="main">
+    <div style="text-align: center; padding: 40px 20px;">
+      <div class="spinner" style="margin: 0 auto;"></div>
+      <p style="margin-top: 16px; color: var(--muted); font-size: 13px;">Cargando tutoriales...</p>
+    </div>
+  </main>
+
+  <footer>
+    <p style="margin-bottom: 8px;">Confianza Inmobiliaria</p>
+    <p style="color: var(--muted);">Creada por Eduardo Pérez · <a href="https://wa.me/56927690949?text=Soporte%20app%20tutoriales" style="color: var(--accent); text-decoration: none;">Soporte WhatsApp</a></p>
+  </footer>
+</div>
+
+<div class="modal" id="settingsModal">
+  <div class="modal-content">
+    <h2 style="font-size: 17px; font-weight: 800; margin-bottom: 20px; color: var(--title);">Configuración</h2>
+
+    <div style="margin-bottom: 20px;">
+      <h3 style="font-size: 12px; font-weight: 700; margin-bottom: 8px; color: var(--muted); text-transform: uppercase;">Tema</h3>
+      <div style="display: flex; gap: 8px;">
+        <button class="chip" id="themeDark" style="flex: 1;">🌙 Oscuro</button>
+        <button class="chip" id="themeLight" style="flex: 1;">☀️ Claro</button>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <h3 style="font-size: 12px; font-weight: 700; margin-bottom: 8px; color: var(--muted); text-transform: uppercase;">Acento</h3>
+      <div style="display: flex; gap: 8px;">
+        <button class="chip" id="accentGold" style="flex: 1; --accent: #f59e0b;">🟡 Dorado</button>
+        <button class="chip" id="accentGreen" style="flex: 1; --accent: #10b981;">🟢 Verde</button>
+        <button class="chip" id="accentBlue" style="flex: 1; --accent: #3b82f6;">🔵 Azul</button>
+      </div>
+    </div>
+
+    <button class="btn-primary" style="width: 100%; margin-bottom: 12px;">📲 Instalar app</button>
+    <button class="btn-primary" style="width: 100%;" id="closeSettings">Cerrar</button>
+  </div>
+</div>
+
+<script>
+// Estado global
+const state = {
+  tutoriales: [],
+  sinonimos: {},
+  categoryIdx: {},
+  filtros: { q: '', cat: '', tags: [] },
+  tema: 'dark',
+  acento: 'dorado',
+  deferredInstall: null,
+};
+
+// Cargar configuración
+function cargarConfig() {
+  try {
+    const cfg = JSON.parse(localStorage.getItem('confianza_tut_cfg_v1') || '{}');
+    if (cfg.tema) state.tema = cfg.tema;
+    if (cfg.acento) state.acento = cfg.acento;
+  } catch { }
+  aplicarTema();
+}
+
+// Aplicar tema
+function aplicarTema() {
+  document.documentElement.setAttribute('data-theme', state.tema);
+  document.documentElement.setAttribute('data-accent', state.acento);
+  guardarConfig();
+}
+
+function guardarConfig() {
+  try {
+    localStorage.setItem('confianza_tut_cfg_v1', JSON.stringify({ tema: state.tema, acento: state.acento }));
+  } catch { }
+}
+
+// Cargar datos
+async function cargarDatos() {
+  try {
+    const res = await fetch('data/tutoriales.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    state.tutoriales = data.tutoriales || [];
+    state.categoryIdx = {};
+    (data.categorias || []).forEach(c => {
+      state.categoryIdx[c.id] = c;
+    });
+    try {
+      const sinRes = await fetch('data/sinonimos.json?t=' + Date.now(), { cache: 'no-store' });
+      if (sinRes.ok) {
+        const sinData = await sinRes.json();
+        sinData.grupos.forEach(g => {
+          g.forEach(t => { state.sinonimos[t] = g; });
+        });
+      }
+    } catch { }
+    renderizar();
+  } catch (err) {
+    document.getElementById('main').innerHTML =
+      '<div class="empty-state"><div class="empty-state-icon">❌</div>' +
+      '<h2 class="empty-state-title">Error al cargar</h2>' +
+      '<p class="empty-state-text">' + esc(err.message) + '</p>' +
+      '<button class="btn-primary" onclick="location.reload()">Reintentar</button></div>';
+  }
+}
+
+// Normalización de texto
+function norm(s) {
+  return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/ñ/g, 'n').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+// Escape HTML
+function esc(s) {
+  const m = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+  return (s || '').replace(/[&<>"']/g, c => m[c]);
+}
+
+// Renderizar
+function renderizar() {
+  const publicados = state.tutoriales.filter(t => t.estado === 'publicado');
+
+  // Categorías
+  const catDom = document.getElementById('categoryContainer');
+  catDom.innerHTML = '';
+  const cats = new Set();
+  publicados.forEach(t => {
+    if (t.categoria) cats.add(t.categoria);
+  });
+  [...cats].sort().forEach(cid => {
+    const chip = document.createElement('button');
+    chip.className = 'chip' + (state.filtros.cat === cid ? ' active' : '');
+    chip.textContent = state.categoryIdx[cid]?.nombre || cid;
+    chip.onclick = () => {
+      state.filtros.cat = state.filtros.cat === cid ? '' : cid;
+      renderizar();
+    };
+    catDom.appendChild(chip);
+  });
+
+  // Resultados
+  let resultados = publicados;
+  if (state.filtros.q) {
+    resultados = buscar(state.filtros.q, resultados);
+  }
+  if (state.filtros.cat) {
+    resultados = resultados.filter(t => t.categoria === state.filtros.cat);
+  }
+
+  const main = document.getElementById('main');
+  if (!resultados.length) {
+    main.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📺</div>' +
+      '<h2 class="empty-state-title">Sin resultados</h2>' +
+      '<p class="empty-state-text">Intenta con otra búsqueda o categoría</p>' +
+      '<button class="btn-primary" onclick="document.getElementById(\'searchInput\').value=\'\'; location.hash=\'#/\'; renderizar();">Limpiar</button></div>';
+    return;
+  }
+
+  main.innerHTML = '<div class="result-count">' + resultados.length + ' tutorial' + (resultados.length !== 1 ? 's' : '') + '</div>' +
+    '<div class="result-list">' + resultados.map(t => `
+    <div class="card" onclick="location.hash='#/t/${esc(t.slug)}'">
+      <div class="card-thumb">
+        <img src="${t.thumbnail || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 9%27%3E%3Crect fill=%27%23000%27 width=%2716%27 height=%279%27/%3E%3C/svg%3E'}" alt="">
+        <div class="card-thumb-play"></div>
+      </div>
+      <div class="card-category">${esc(state.categoryIdx[t.categoria]?.nombre || t.categoria || 'Sin categoría')}</div>
+      <h3 class="card-title">${esc(t.titulo)}</h3>
+      <p class="card-desc">${esc((t.descripcion || 'Sin descripción').substring(0, 60))}</p>
+      <div class="card-tags">${(t.etiquetas || []).slice(0, 3).map(tag => `<span class="tag">${esc(tag)}</span>`).join('')}</div>
+    </div>
+  `).join('') + '</div>';
+}
+
+// Buscador (versión simple para fase 1)
+function buscar(q, items) {
+  const qnorm = norm(q);
+  if (!qnorm) return items;
+  return items.filter(t => {
+    const busqueda = norm(t.titulo + ' ' + (t.descripcion || '') + ' ' + (t.etiquetas || []).join(' '));
+    return busqueda.includes(qnorm);
+  }).sort((a, b) => {
+    const aScore = norm(a.titulo).includes(qnorm) ? 10 : 1;
+    const bScore = norm(b.titulo).includes(qnorm) ? 10 : 1;
+    return bScore - aScore;
+  });
+}
+
+// Event listeners
+document.getElementById('searchInput').addEventListener('input', () => {
+  state.filtros.q = document.getElementById('searchInput').value;
+  renderizar();
+});
+
+document.getElementById('gearBtn').addEventListener('click', () => {
+  document.getElementById('settingsModal').classList.add('open');
+});
+
+document.getElementById('closeSettings').addEventListener('click', () => {
+  document.getElementById('settingsModal').classList.remove('open');
+});
+
+document.getElementById('themeDark').addEventListener('click', () => {
+  state.tema = 'dark';
+  aplicarTema();
+  document.getElementById('themeDark').classList.add('active');
+  document.getElementById('themeLight').classList.remove('active');
+});
+
+document.getElementById('themeLight').addEventListener('click', () => {
+  state.tema = 'light';
+  aplicarTema();
+  document.getElementById('themeLight').classList.add('active');
+  document.getElementById('themeDark').classList.remove('active');
+});
+
+['accentGold', 'accentGreen', 'accentBlue'].forEach(id => {
+  document.getElementById(id).addEventListener('click', () => {
+    state.acento = id.replace('accent', '').toLowerCase();
+    aplicarTema();
+    ['accentGold', 'accentGreen', 'accentBlue'].forEach(x => document.getElementById(x).classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  });
+});
+
+// Detectar instalación
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  state.deferredInstall = e;
+  document.querySelector('[onclick*="Instalar"]')?.addEventListener('click', async () => {
+    if (state.deferredInstall) {
+      state.deferredInstall.prompt();
+      const { outcome } = await state.deferredInstall.userChoice;
+      state.deferredInstall = null;
+    }
+  });
+});
+
+// Iniciar
+cargarConfig();
+cargarDatos();
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => { });
+}
+</script>
+</body>
+</html>

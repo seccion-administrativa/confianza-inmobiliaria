@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "actualizado": "2026-09-24T00:00:00-03:00",
+  "categorias": [
+    {"id": "pendiente", "nombre": "Pendiente definir", "orden": 1, "icono": "📚", "sub": []}
+  ],
+  "tutoriales": [
+    {
+      "id": "tut-001",
+      "slug": "como-agregar-aval-y-link-para-evaluarse",
+      "titulo": "Cómo agregar aval y link para evaluarse",
+      "descripcion": "PENDIENTE — ver el video",
+      "categoria": "pendiente",
+      "subcategoria": null,
+      "etiquetas": ["aval", "evaluación", "link"],
+      "palabras_clave": ["codeudor", "postulante", "evaluar"],
+      "pasos": [],
+      "video": {
+        "proveedor": "drive",
+        "id": "1dALtjISFgqa2dbbr3CmyxlF4yTJWEtvT",
+        "archivo_original": "como agregó aval y link para evaluarse.mp4",
+        "bytes": 46023581
+      },
+      "duracion_seg": null,
+      "fecha": "2026-08-24",
+      "orden": 1,
+      "estado": "borrador",
+      "thumbnail": "thumbs/tut-001.webp",
+      "destacado": false,
+      "plataforma": "Assetplan (PENDIENTE confirmar)",
+      "transcripcion": null
+    }
+  ]
+}
