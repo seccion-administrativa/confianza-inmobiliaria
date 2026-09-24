@@ -81,15 +81,40 @@ header { position:sticky; top:0; z-index:100; padding:calc(18px + env(safe-area-
 .suggest { font-size:12px; color:var(--muted); margin-top:8px; }
 .suggest a { color:var(--accent); cursor:pointer; font-weight:700; text-decoration:none; }
 
-.categories { display:flex; gap:8px; overflow-x:auto; padding:14px 20px 0; margin-bottom:12px;
-  scroll-behavior:smooth; -webkit-overflow-scrolling:touch; scrollbar-width:none;
-}
-.categories::-webkit-scrollbar { display:none; }
 .chip { padding:7px 13px; border-radius:10px; border:1px solid var(--border); background:var(--surface);
   color:var(--txt); font-size:13px; font-weight:700; white-space:nowrap; cursor:pointer;
   transition:border-color 150ms var(--ease-out), background 150ms var(--ease-out), color 150ms var(--ease-out);
 }
 .chip.active { border-color:var(--accent); background:color-mix(in srgb, var(--accent) 16%, transparent); color:var(--accent); }
+
+.cat-select { position:relative; margin:14px 20px 4px; z-index:60; }
+.cat-toggle { width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding:12px 15px; border-radius:12px; border:1px solid var(--border); background:var(--surface);
+  color:var(--txt); font-size:14px; font-weight:700; cursor:pointer; font-family:inherit;
+  transition:border-color 150ms var(--ease-out);
+}
+.cat-toggle:active { transform:translateY(1px); }
+.cat-select.open .cat-toggle { border-color:var(--accent); }
+.caret { transition:transform 200ms var(--ease-out); color:var(--muted); font-size:12px; }
+.cat-select.open .caret { transform:rotate(180deg); }
+.cat-panel { position:absolute; top:calc(100% + 6px); left:0; right:0; background:var(--bg2);
+  border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); overflow:hidden;
+  max-height:0; opacity:0; pointer-events:none;
+  transition:max-height 250ms var(--ease-out), opacity 150ms var(--ease-out);
+}
+.cat-select.open .cat-panel { max-height:min(70vh, 460px); opacity:1; pointer-events:auto; overflow-y:auto; }
+.cat-opt { display:flex; align-items:center; gap:10px; width:100%; padding:13px 15px; border:none;
+  background:transparent; color:var(--txt); font-size:14px; font-weight:600; cursor:pointer; text-align:left;
+  border-bottom:1px solid var(--border-soft); font-family:inherit;
+}
+.cat-opt:last-child { border-bottom:none; }
+.cat-opt:active { background:var(--field); }
+.cat-opt.active { color:var(--accent); background:color-mix(in srgb, var(--accent) 10%, transparent); }
+.cat-opt-icon { font-size:17px; width:22px; text-align:center; }
+.cat-opt-count { margin-left:auto; font-size:12px; font-weight:700; color:var(--muted);
+  background:var(--surface); border:1px solid var(--border); padding:1px 8px; border-radius:999px;
+}
+.cat-opt.active .cat-opt-count { color:var(--accent); }
 
 .hero { margin:0 20px 4px; padding:22px 20px; border-radius:20px; position:relative; overflow:hidden;
   background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 22%, var(--surface)), var(--surface) 70%);
@@ -140,6 +165,7 @@ header { position:sticky; top:0; z-index:100; padding:calc(18px + env(safe-area-
   border-radius:12px; overflow:hidden; margin-bottom:12px;
 }
 .card-thumb img { width:100%; height:100%; object-fit:cover; }
+.vid-ph { background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 20%, #05070a), #05070a 75%); }
 .card-thumb-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
   background:rgba(0,0,0,.28);
 }
@@ -251,16 +277,12 @@ footer { text-align:center; padding:20px 18px calc(30px + env(safe-area-inset-bo
 footer a { color:var(--accent); text-decoration:none; font-weight:700; }
 
 @media (min-width: 900px) {
-  .app { max-width:1200px; display:grid; grid-template-columns:320px 1fr;
-    grid-template-areas:"header header" "sidebar main" "footer footer"; min-height:100vh;
-  }
-  header { grid-area:header; position:sticky; }
-  .categories { grid-area:sidebar; padding:20px 16px; margin-bottom:0; flex-direction:column;
-    position:sticky; top:120px; align-self:start; max-height:calc(100vh - 140px); overflow-y:auto;
-  }
-  .results { grid-area:main; padding:20px 30px 60px; }
-  .result-list { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:18px; align-items:start; }
-  footer { grid-area:footer; }
+  .app { max-width:1000px; }
+  .cat-select { margin:16px 30px 4px; }
+  .hero { margin:0 30px 4px; }
+  .results { padding:16px 30px 60px; }
+  .result-list { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:18px; align-items:start; }
+  .section .result-list { grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); }
 }
   </style>
 </head>
@@ -280,7 +302,13 @@ footer a { color:var(--accent); text-decoration:none; font-weight:700; }
     <div class="suggest" id="suggest"></div>
   </header>
 
-  <nav class="categories" id="categoryContainer" aria-label="Categorías"></nav>
+  <div class="cat-select" id="catSelect">
+    <button class="cat-toggle" id="catToggle" aria-haspopup="listbox" aria-expanded="false">
+      <span id="catToggleLabel">Todas las categorías</span>
+      <span class="caret" aria-hidden="true">▾</span>
+    </button>
+    <div class="cat-panel" id="catPanel" role="listbox"></div>
+  </div>
 
   <main class="results" id="main" aria-live="polite"></main>
 
@@ -339,7 +367,6 @@ const st = {
   filtros: { q:'', cat:'' },
   tema:'dark', acento:'dorado', install:null, scrollY:0,
 };
-const PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%23111418' width='16' height='9'/%3E%3C/svg%3E";
 const STOP = new Set(['de','la','el','los','las','un','una','y','o','en','para','por','con','del','al','como','que','se','su','mi']);
 const SUFIJOS = ['aciones','acion','iciones','icion','amiento','imiento','mente','adores','adora','ador','ando','iendo','aron','ieron','aste','iste','aba','ado','ada','ido','ida','ar','er','ir','as','es','os','a','e','o','s'];
 const PESOS = { titulo:10, palabras_clave:7, etiquetas:6, categoria:5, subcategoria:5, pasos:3, descripcion:2, transcripcion:1 };
@@ -484,11 +511,6 @@ function highlight(text, qterms){
     return word;
   }).join('');
 }
-function driveThumb(t){
-  if(t.thumbnail) return t.thumbnail;
-  if(t.video && t.video.proveedor==='drive') return 'https://drive.google.com/thumbnail?id='+t.video.id+'&sz=w640';
-  return PLACEHOLDER;
-}
 function docIcon(fmt){ return fmt==='pdf' ? '📕' : fmt==='docx' ? '📘' : '📄'; }
 function cardThumb(t){
   if(t.tipo==='documento'){
@@ -496,8 +518,12 @@ function cardThumb(t){
       (t.formato?'<span class="fmt-badge">'+esc(t.formato)+'</span>':'')+'</div>';
   }
   const dur=fmtDur(t.duracion_seg);
-  return '<div class="card-thumb"><img src="'+esc(driveThumb(t))+'" alt="" loading="lazy" decoding="async" width="640" height="360" onerror="this.src=\''+PLACEHOLDER+'\'">'+
-    '<div class="card-thumb-overlay"><span class="play-badge"></span></div>'+
+  if(t.thumbnail){
+    return '<div class="card-thumb"><img src="'+esc(t.thumbnail)+'" alt="" loading="lazy" decoding="async" width="640" height="360">'+
+      '<div class="card-thumb-overlay"><span class="play-badge"></span></div>'+
+      (dur?'<span class="dur-badge">'+esc(dur)+'</span>':'')+'</div>';
+  }
+  return '<div class="card-thumb vid-ph"><div class="card-thumb-overlay"><span class="play-badge"></span></div>'+
     (dur?'<span class="dur-badge">'+esc(dur)+'</span>':'')+'</div>';
 }
 function cardHTML(t, qterms){
@@ -513,10 +539,36 @@ function cardHTML(t, qterms){
 function renderCategories(publicados){
   const cats=[...new Set(publicados.map(t=>t.categoria).filter(Boolean))];
   cats.sort((a,b)=>(st.categoryIdx[a]?.orden||99)-(st.categoryIdx[b]?.orden||99));
-  const dom=document.getElementById('categoryContainer');
-  if(cats.length<=1){ dom.innerHTML=''; return; }
-  dom.innerHTML='<button class="chip'+(st.filtros.cat===''?' active':'')+'" data-cat="">Todos</button>'+
-    cats.map(cid=>'<button class="chip'+(st.filtros.cat===cid?' active':'')+'" data-cat="'+esc(cid)+'">'+esc(st.categoryIdx[cid]?.nombre||cid)+'</button>').join('');
+  const sel=document.getElementById('catSelect');
+  const panel=document.getElementById('catPanel');
+  const label=document.getElementById('catToggleLabel');
+  if(cats.length<=1){ sel.style.display='none'; return; }
+  sel.style.display='';
+
+  const total=publicados.length;
+  const opt=(cid, nombre, icono, count)=>
+    '<button class="cat-opt'+(st.filtros.cat===cid?' active':'')+'" data-cat="'+esc(cid)+'" role="option">'+
+      (icono?'<span class="cat-opt-icon">'+esc(icono)+'</span>':'<span class="cat-opt-icon">📚</span>')+
+      '<span>'+esc(nombre)+'</span><span class="cat-opt-count">'+count+'</span></button>';
+  panel.innerHTML = opt('', 'Todas las categorías', '📚', total) +
+    cats.map(cid=>{
+      const c=st.categoryIdx[cid]||{};
+      const count=publicados.filter(t=>t.categoria===cid).length;
+      return opt(cid, c.nombre||cid, c.icono, count);
+    }).join('');
+
+  // etiqueta del botón según selección
+  if(st.filtros.cat){
+    const c=st.categoryIdx[st.filtros.cat]||{};
+    label.textContent=(c.icono?c.icono+' ':'')+(c.nombre||st.filtros.cat);
+  } else {
+    label.textContent='Todas las categorías';
+  }
+}
+function closeCatPanel(){
+  const sel=document.getElementById('catSelect');
+  sel.classList.remove('open');
+  document.getElementById('catToggle').setAttribute('aria-expanded','false');
 }
 function render(){
   const publicados=st.tutoriales.filter(t=>t.estado==='publicado');
@@ -600,8 +652,10 @@ function openFicha(id, push=true){
     // Facade: iframe solo al tocar
     if(esDoc){
       pc.innerHTML='<div class="player-facade" id="facade" style="flex-direction:column;gap:10px;background:linear-gradient(135deg,#1d2228,#111418)"><span style="font-size:56px">'+docIcon(t.formato)+'</span><span style="color:#fff;font-weight:700;font-size:14px">Ver documento</span></div>';
+    } else if(t.thumbnail){
+      pc.innerHTML='<div class="player-facade" id="facade" style="background-image:url(\''+esc(t.thumbnail)+'\')"><span class="play-badge"></span></div>';
     } else {
-      pc.innerHTML='<div class="player-facade" id="facade" style="background-image:url(\''+esc(driveThumb(t))+'\')"><span class="play-badge"></span></div>';
+      pc.innerHTML='<div class="player-facade vid-ph" id="facade"><span class="play-badge"></span></div>';
     }
     document.getElementById('facade').addEventListener('click',()=>{
       pc.innerHTML='<iframe src="'+esc(src)+'" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>';
@@ -635,9 +689,14 @@ function openFicha(id, push=true){
   const rel=st.tutoriales.filter(x=>x.id!==t.id && x.estado==='publicado' && x.categoria===t.categoria).slice(0,4);
   const relDom=document.getElementById('fichaRelacionados');
   relDom.innerHTML = rel.length ? '<h3 class="ficha-section-h">Relacionados</h3><div class="rel-grid">'+
-    rel.map(r=>'<article class="card" data-open="'+esc(r.id)+'" style="padding:12px" tabindex="0" role="button">'+
-      '<div class="card-thumb" style="margin-bottom:8px"><img src="'+esc(r.thumbnail||PLACEHOLDER)+'" alt="" loading="lazy" onerror="this.src=\''+PLACEHOLDER+'\'"><div class="card-thumb-overlay"><span class="play-badge" style="width:36px;height:36px"></span></div></div>'+
-      '<h4 class="card-title" style="font-size:13px">'+esc(r.titulo)+'</h4></article>').join('')+'</div>' : '';
+    rel.map(r=>{
+      const thumb = r.tipo==='documento'
+        ? '<div class="doc-thumb" style="margin-bottom:8px"><span style="font-size:30px">'+docIcon(r.formato)+'</span></div>'
+        : r.thumbnail
+          ? '<div class="card-thumb" style="margin-bottom:8px"><img src="'+esc(r.thumbnail)+'" alt="" loading="lazy"><div class="card-thumb-overlay"><span class="play-badge" style="width:36px;height:36px"></span></div></div>'
+          : '<div class="card-thumb vid-ph" style="margin-bottom:8px"><div class="card-thumb-overlay"><span class="play-badge" style="width:36px;height:36px"></span></div></div>';
+      return '<article class="card" data-open="'+esc(r.id)+'" style="padding:12px" tabindex="0" role="button">'+thumb+'<h4 class="card-title" style="font-size:13px">'+esc(r.titulo)+'</h4></article>';
+    }).join('')+'</div>' : '';
 
   document.getElementById('ficha').classList.add('open');
   document.getElementById('ficha').scrollTop=0;
@@ -712,12 +771,25 @@ document.getElementById('suggest').addEventListener('click',e=>{
   render(); updateURL();
 });
 
-// delegación: abrir tarjetas (listado + relacionados)
+// toggle dropdown de categorías
+document.getElementById('catToggle').addEventListener('click',e=>{
+  e.stopPropagation();
+  const sel=document.getElementById('catSelect');
+  const open=sel.classList.toggle('open');
+  document.getElementById('catToggle').setAttribute('aria-expanded', open?'true':'false');
+});
+
+// delegación: abrir tarjetas (listado + relacionados), seleccionar categoría, acciones
 document.body.addEventListener('click',e=>{
   const card=e.target.closest('[data-open]'); if(card){ openFicha(card.dataset.open); return; }
-  const catBtn=e.target.closest('[data-cat]'); if(catBtn){ st.filtros.cat=catBtn.dataset.cat; render(); updateURL(); return; }
+  const catBtn=e.target.closest('[data-cat]'); if(catBtn){
+    st.filtros.cat=catBtn.dataset.cat; closeCatPanel(); render(); updateURL();
+    window.scrollTo({top:0, behavior:'smooth'}); return;
+  }
   if(e.target.closest('[data-copy]')){ copyLink(); return; }
   if(e.target.closest('[data-share]')){ shareWhatsApp(); return; }
+  // click fuera del dropdown lo cierra
+  if(!e.target.closest('#catSelect')) closeCatPanel();
 });
 document.body.addEventListener('keydown',e=>{
   const card=e.target.closest('[data-open]');
@@ -738,6 +810,7 @@ document.addEventListener('keydown',e=>{
     e.preventDefault(); document.getElementById('searchInput').focus();
   }
   if(e.key==='Escape'){
+    if(document.getElementById('catSelect').classList.contains('open')){ closeCatPanel(); return; }
     if(document.getElementById('settingsModal').classList.contains('open')){ document.getElementById('settingsModal').classList.remove('open'); return; }
     if(document.getElementById('ficha').classList.contains('open')){ history.back(); return; }
     if(st.filtros.q||st.filtros.cat) clearSearch();
