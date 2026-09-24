@@ -21,13 +21,13 @@ Git te pedirá login (usa el navegador que aparecerá).
 
 ## 3. Activar Pages
 
-1. Ve a https://github.com/cotizadora/confianza-tutoriales
+1. Ve a https://github.com/seccion-administrativa/confianza-inmobiliaria
 2. Settings → Pages
 3. **Source:** Deploy from a branch
 4. **Branch:** main / root
 5. Espera ~2 min
 
-Tu app estará en: **https://cotizadora.github.io/confianza-tutoriales/**
+Tu app estará en: **https://seccion-administrativa.github.io/confianza-inmobiliaria/**
 
 ## 4. Agregar tutoriales
 
@@ -74,4 +74,4 @@ Solo edita `video.proveedor` en el JSON. No requiere cambios en código.
 
 ---
 
-**¿Problemas?** Abre un issue en https://github.com/cotizadora/confianza-tutoriales/issues
+**¿Problemas?** Abre un issue en https://github.com/seccion-administrativa/confianza-inmobiliaria/issues

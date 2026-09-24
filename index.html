@@ -2,10 +2,11 @@
 <html lang="es-CL" data-theme="dark" data-accent="dorado">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#181c21">
   <meta name="description" content="Centro de tutoriales para ejecutivos de Confianza Inmobiliaria">
   <meta name="robots" content="noindex,nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://i.ytimg.com https://drive.google.com https://lh3.googleusercontent.com; frame-src https://www.youtube-nocookie.com https://drive.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self'">
   <meta property="og:title" content="Confianza · Centro de tutoriales">
   <meta property="og:description" content="Tutoriales en video para ejecutivos y vendedores">
   <meta property="og:image" content="logo.png">
@@ -21,7 +22,6 @@
 html {
   --dorado:#f59e0b; --verde:#10b981; --azul:#3b82f6; --rojo:#f43f5e;
   --accent:#f59e0b; --accent-ink:#0a1530; --radius:18px;
-  --sp-xs:.5rem; --sp-sm:.75rem; --sp-md:1rem; --sp-lg:1.5rem; --sp-xl:2.25rem;
   --ease-out:cubic-bezier(.16,1,.3,1);
 }
 html[data-accent="dorado"] { --accent:#f59e0b; --accent-ink:#1a1204; }
@@ -29,12 +29,12 @@ html[data-accent="verde"] { --accent:#10b981; --accent-ink:#022c22; }
 html[data-accent="azul"] { --accent:#3b82f6; --accent-ink:#0a1530; }
 html[data-theme="dark"] {
   --page:#0b0d10; --bg1:#111418; --bg2:#181c21; --surface:#1d2228; --field:#15191e;
-  --border:#333a42; --title:#fff; --txt:#e6e9ee; --muted:#9aa3ad;
+  --border:#333a42; --border-soft:#242a30; --title:#fff; --txt:#e6e9ee; --muted:#9aa3ad;
   --shadow:0 20px 44px -18px rgba(0,0,0,.75);
 }
 html[data-theme="light"] {
   --page:#eef1f8; --bg1:#f5f7fc; --bg2:#fff; --surface:#fff; --field:#f4f6fc;
-  --border:#e2e6f0; --title:#0d1b3e; --txt:#334155; --muted:#64748b;
+  --border:#e2e6f0; --border-soft:#eef1f8; --title:#0d1b3e; --txt:#334155; --muted:#64748b;
   --shadow:0 16px 34px -20px rgba(13,27,62,.28);
 }
 body {
@@ -44,40 +44,50 @@ body {
   min-height:100vh;
 }
 :focus-visible { outline:2px solid var(--title); outline-offset:2px; }
-@media (prefers-reduced-motion: reduce) { * { animation:none !important; transition:none !important; } }
-@media (hover: hover) { button:hover, a:hover { opacity:.85; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
+@media (hover: hover) { button:hover, a:hover { opacity:.9; } }
+mark { background:color-mix(in srgb, var(--accent) 35%, transparent); color:inherit; border-radius:3px; padding:0 1px; }
 
 .app { max-width:480px; margin:0 auto; min-height:100vh;
   background:radial-gradient(120% 60% at 50% -10%, var(--bg2), var(--bg1) 60%, var(--page));
 }
-header { position:sticky; top:0; z-index:100; padding:18px 20px 15px;
-  background:var(--bg2); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+header { position:sticky; top:0; z-index:100; padding:calc(18px + env(safe-area-inset-top)) 20px 15px;
+  background:linear-gradient(180deg, var(--bg2), color-mix(in srgb, var(--bg2) 82%, transparent));
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
   border-bottom:1px solid var(--border);
 }
 .header-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
 .logo { height:40px; width:auto; }
 .gear-btn {
   width:42px; height:42px; border-radius:13px; border:1px solid var(--border);
-  background:var(--surface); cursor:pointer; font-size:18px;
+  background:var(--surface); cursor:pointer; font-size:18px; color:var(--txt);
   display:flex; align-items:center; justify-content:center;
-  transition:all 100ms var(--ease-out);
+  transition:transform 100ms var(--ease-out);
 }
 .gear-btn:active { transform:translateY(1px); }
 .search-container { position:relative; }
 .search-input {
-  width:100%; padding:12px 15px 12px 40px; border-radius:12px;
+  width:100%; padding:12px 40px 12px 40px; border-radius:12px;
   background:var(--field); border:1px solid var(--border); color:var(--txt); font-size:16px;
-  transition:all 150ms var(--ease-out);
+  transition:border-color 150ms var(--ease-out), box-shadow 150ms var(--ease-out);
 }
-.search-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+.search-input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
 .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
+.search-clear { position:absolute; right:8px; top:50%; transform:translateY(-50%); width:28px; height:28px;
+  border:none; background:transparent; color:var(--muted); font-size:18px; cursor:pointer; border-radius:8px;
+  display:none; align-items:center; justify-content:center;
+}
+.search-clear.show { display:flex; }
+.suggest { font-size:12px; color:var(--muted); margin-top:8px; }
+.suggest a { color:var(--accent); cursor:pointer; font-weight:700; text-decoration:none; }
 
 .categories { display:flex; gap:8px; overflow-x:auto; padding:14px 20px 0; margin-bottom:12px;
-  scroll-behavior:smooth; -webkit-overflow-scrolling:touch;
+  scroll-behavior:smooth; -webkit-overflow-scrolling:touch; scrollbar-width:none;
 }
+.categories::-webkit-scrollbar { display:none; }
 .chip { padding:7px 13px; border-radius:10px; border:1px solid var(--border); background:var(--surface);
   color:var(--txt); font-size:13px; font-weight:700; white-space:nowrap; cursor:pointer;
-  transition:all 150ms var(--ease-out);
+  transition:border-color 150ms var(--ease-out), background 150ms var(--ease-out), color 150ms var(--ease-out);
 }
 .chip.active { border-color:var(--accent); background:color-mix(in srgb, var(--accent) 16%, transparent); color:var(--accent); }
 
@@ -87,78 +97,139 @@ header { position:sticky; top:0; z-index:100; padding:18px 20px 15px;
 
 .card {
   border-radius:18px; border:1px solid var(--border); background:var(--surface);
-  padding:18px; box-shadow:var(--shadow); cursor:pointer;
-  transition:all 180ms var(--ease-out); position:relative;
+  padding:18px; box-shadow:var(--shadow); cursor:pointer; position:relative; overflow:hidden;
+  transition:transform 180ms var(--ease-out);
 }
-.card:active { transform:translateY(-3px); }
+.card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:var(--accent); opacity:0; transition:opacity 150ms;
+}
+@media (hover: hover) { .card:hover { transform:translateY(-3px); } .card:hover::before { opacity:1; } }
+.card:active { transform:translateY(1px); }
 .card-thumb { position:relative; width:100%; aspect-ratio:16/9; background:#000;
   border-radius:12px; overflow:hidden; margin-bottom:12px;
 }
 .card-thumb img { width:100%; height:100%; object-fit:cover; }
 .card-thumb-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-  background:rgba(0,0,0,.3);
+  background:rgba(0,0,0,.28);
 }
-.card-thumb-overlay::after { content:'▶'; font-size:32px; color:#fff; }
+.play-badge { width:48px; height:48px; border-radius:50%; background:rgba(0,0,0,.55);
+  display:flex; align-items:center; justify-content:center;
+}
+.play-badge::after { content:''; width:0; height:0; border-style:solid; border-width:9px 0 9px 15px;
+  border-color:transparent transparent transparent #fff; margin-left:3px;
+}
+.dur-badge { position:absolute; right:8px; bottom:8px; background:rgba(0,0,0,.8); color:#fff;
+  font-size:11px; font-weight:700; padding:2px 6px; border-radius:6px;
+}
 .card-category { display:inline-block; font-size:11px; font-weight:700; padding:4px 10px;
   border-radius:999px; background:color-mix(in srgb, var(--accent) 16%, transparent); color:var(--accent);
   margin-bottom:8px;
 }
-.card-title { font-size:16px; font-weight:800; line-height:1.2; margin-bottom:6px; color:var(--title); }
-.card-desc { font-size:13px; color:var(--txt); line-height:1.4; margin-bottom:8px; }
+.card-title { font-size:16px; font-weight:800; line-height:1.2; margin-bottom:6px; color:var(--title);
+  text-wrap:balance;
+}
+.card-desc { font-size:13px; color:var(--txt); line-height:1.4; margin-bottom:8px;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
 .card-tags { display:flex; flex-wrap:wrap; gap:6px; }
-.tag { font-size:11px; padding:4px 8px; border-radius:6px; background:var(--border); color:var(--muted); }
+.tag { font-size:11px; font-weight:600; padding:4px 8px; border-radius:6px; background:var(--border-soft); color:var(--muted); }
 
 .empty-state { text-align:center; padding:64px 24px; }
 .empty-state-icon { font-size:48px; margin-bottom:16px; }
 .empty-state-title { font-size:17px; font-weight:700; color:var(--title); margin-bottom:8px; }
-.empty-state-text { font-size:13px; color:var(--muted); margin-bottom:20px; }
-.btn-primary { padding:12px 14px; border-radius:12px; min-height:44px;
-  background:var(--accent); color:var(--accent-ink); border:none; font-size:13.5px; font-weight:700;
-  cursor:pointer; transition:all 100ms var(--ease-out);
+.empty-state-text { font-size:13px; color:var(--muted); margin-bottom:20px; line-height:1.5; }
+.btn { padding:12px 14px; border-radius:12px; min-height:44px;
+  border:1px solid var(--border); background:var(--surface); color:var(--txt); font-size:13.5px; font-weight:700;
+  cursor:pointer; transition:transform 100ms var(--ease-out); font-family:inherit;
+  display:inline-flex; align-items:center; justify-content:center; gap:6px;
 }
-.btn-primary:active { transform:translateY(1px); }
+.btn:active { transform:translateY(1px); }
+.btn-primary { background:var(--accent); color:var(--accent-ink); border-color:transparent; }
+.btn-ghost { background:transparent; }
 
 .modal { display:none; position:fixed; inset:0; background:rgba(3,7,18,.7); z-index:200;
   -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px);
 }
-.modal.open { display:flex; align-items:flex-end; }
+.modal.open { display:flex; align-items:flex-end; justify-content:center; }
 .modal-content { width:100%; max-width:480px; max-height:90vh; background:var(--bg2);
-  border-radius:22px 22px 0 0; padding:20px 18px 26px; overflow-y:auto;
+  border-radius:22px 22px 0 0; padding:20px 18px calc(26px + env(safe-area-inset-bottom)); overflow-y:auto;
   animation:slideUp 220ms var(--ease-out);
 }
 @keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+.modal-h2 { font-size:17px; font-weight:800; margin-bottom:20px; color:var(--title); }
+.field-group { margin-bottom:20px; }
+.field-label { font-size:11px; font-weight:700; margin-bottom:8px; color:var(--muted);
+  text-transform:uppercase; letter-spacing:.07em;
+}
+.field-row { display:flex; gap:8px; }
+.field-row .chip { flex:1; justify-content:center; text-align:center; }
 
 .ficha { display:none; position:fixed; inset:0; background:var(--page); z-index:150; overflow-y:auto; }
 .ficha.open { display:block; }
-.ficha-head { position:sticky; top:0; z-index:10; padding:12px 20px; background:var(--bg2);
-  border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;
+.ficha-head { position:sticky; top:0; z-index:10;
+  padding:calc(12px + env(safe-area-inset-top)) 20px 12px;
+  background:var(--bg2); border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:12px;
 }
-.ficha-body { max-width:640px; margin:0 auto; padding:20px; }
-.player { width:100%; aspect-ratio:16/9; background:#000; border-radius:18px;
-  display:flex; align-items:center; justify-content:center; margin-bottom:20px; position:relative;
+.ficha-back { background:none; border:none; font-size:22px; cursor:pointer; color:var(--txt);
+  width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:10px;
 }
-.player iframe { width:100%; height:100%; border:none; border-radius:18px; }
-.player-facade { cursor:pointer; width:100%; height:100%; display:flex; align-items:center;
-  justify-content:center;
+.ficha-body { max-width:720px; margin:0 auto; padding:20px; }
+.player { width:100%; aspect-ratio:16/9; background:#000; border-radius:18px; overflow:hidden;
+  margin-bottom:20px; position:relative;
 }
-.player-facade::after { content:'▶'; font-size:56px; color:#fff; }
+.player iframe { width:100%; height:100%; border:none; display:block; }
+.player-facade { position:absolute; inset:0; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  background-size:cover; background-position:center;
+}
+.player-facade .play-badge { width:64px; height:64px; }
+.player-facade .play-badge::after { border-width:12px 0 12px 20px; margin-left:4px; }
+.ficha-title { font-size:22px; font-weight:800; line-height:1.15; margin-bottom:8px; color:var(--title); text-wrap:balance; }
+.ficha-meta { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:20px; font-size:12px; color:var(--muted); }
+.ficha-desc { font-size:14px; line-height:1.6; margin-bottom:20px; color:var(--txt); white-space:pre-wrap; }
+.ficha-section-h { font-size:14px; font-weight:700; margin-bottom:12px; color:var(--title); }
+.ficha-pasos { margin:0 0 20px 20px; color:var(--txt); font-size:14px; line-height:1.6; }
+.ficha-pasos li { margin-bottom:8px; }
+.ficha-acciones { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
+.ficha-rel { margin-bottom:40px; }
+.rel-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
 
 .spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--accent);
   border-radius:50%; animation:spin 1s linear infinite;
 }
 @keyframes spin { to { transform:rotate(360deg); } }
+.skeleton { border-radius:18px; background:var(--surface); border:1px solid var(--border); padding:18px; }
+.skeleton .sk-thumb { width:100%; aspect-ratio:16/9; border-radius:12px; margin-bottom:12px;
+  background:linear-gradient(90deg, var(--border-soft) 25%, var(--border) 50%, var(--border-soft) 75%);
+  background-size:200% 100%; animation:shimmer 1.4s infinite;
+}
+.skeleton .sk-line { height:14px; border-radius:6px; margin-bottom:8px;
+  background:linear-gradient(90deg, var(--border-soft) 25%, var(--border) 50%, var(--border-soft) 75%);
+  background-size:200% 100%; animation:shimmer 1.4s infinite;
+}
+@keyframes shimmer { to { background-position:-200% 0; } }
 
-footer { text-align:center; padding:20px 18px 30px; font-size:11px; color:var(--muted); }
+.toast { position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom)); transform:translateX(-50%);
+  background:var(--surface); border:1px solid var(--border); color:var(--title);
+  font-size:13px; font-weight:700; padding:10px 18px; border-radius:999px; box-shadow:var(--shadow);
+  z-index:300; opacity:0; pointer-events:none; transition:opacity 200ms;
+}
+.toast.show { opacity:1; }
+
+footer { text-align:center; padding:20px 18px calc(30px + env(safe-area-inset-bottom)); font-size:11px; color:var(--muted); }
+footer a { color:var(--accent); text-decoration:none; font-weight:700; }
 
 @media (min-width: 900px) {
   .app { max-width:1200px; display:grid; grid-template-columns:320px 1fr;
     grid-template-areas:"header header" "sidebar main" "footer footer"; min-height:100vh;
   }
-  header { grid-area:header; position:static; }
-  .categories { grid-area:sidebar; padding:14px 16px; margin-bottom:0; flex-direction:column; }
-  .results { grid-area:main; padding:14px 30px 60px; }
-  .result-list { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:18px; }
-  .chip { width:100%; }
+  header { grid-area:header; position:sticky; }
+  .categories { grid-area:sidebar; padding:20px 16px; margin-bottom:0; flex-direction:column;
+    position:sticky; top:120px; align-self:start; max-height:calc(100vh - 140px); overflow-y:auto;
+  }
+  .results { grid-area:main; padding:20px 30px 60px; }
+  .result-list { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:18px; align-items:start; }
+  footer { grid-area:footer; }
 }
   </style>
 </head>
@@ -166,380 +237,441 @@ footer { text-align:center; padding:20px 18px 30px; font-size:11px; color:var(--
 <div class="app">
   <header>
     <div class="header-top">
-      <img src="logo.png" alt="Confianza" class="logo">
-      <button class="gear-btn" id="gearBtn" title="Configuración">⚙️</button>
+      <img src="logo.png" alt="Confianza Inmobiliaria" class="logo">
+      <button class="gear-btn" id="gearBtn" title="Configuración" aria-label="Configuración">⚙</button>
     </div>
     <div class="search-container">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="searchInput" class="search-input" placeholder="Buscar tutorial..." autocomplete="off" spellcheck="false">
+      <span class="search-icon" aria-hidden="true">🔍</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="Buscar tutorial…"
+        autocomplete="off" spellcheck="false" enterkeyhint="search" aria-label="Buscar tutorial">
+      <button class="search-clear" id="searchClear" aria-label="Limpiar búsqueda">×</button>
     </div>
+    <div class="suggest" id="suggest"></div>
   </header>
 
-  <div class="categories" id="categoryContainer"></div>
+  <nav class="categories" id="categoryContainer" aria-label="Categorías"></nav>
 
-  <main class="results" id="main">
-    <div style="text-align:center; padding:40px 20px;">
-      <div class="spinner" style="margin:0 auto;"></div>
-      <p style="margin-top:16px; color:var(--muted); font-size:13px;">Cargando tutoriales...</p>
-    </div>
-  </main>
+  <main class="results" id="main" aria-live="polite"></main>
 
   <footer>
     <p style="margin-bottom:8px;">Confianza Inmobiliaria · Centro de Tutoriales</p>
-    <p style="color:var(--muted);">Creada por Eduardo Pérez · <a href="https://wa.me/56927690949?text=Soporte%20app%20tutoriales" style="color:var(--accent); text-decoration:none;">Soporte WhatsApp</a></p>
+    <p>Creada por Eduardo Pérez · <a href="https://wa.me/56927690949?text=Consulta%20sobre%20los%20tutoriales">Soporte WhatsApp</a></p>
   </footer>
 </div>
 
-<div class="modal" id="settingsModal">
+<div class="modal" id="settingsModal" role="dialog" aria-modal="true" aria-label="Configuración">
   <div class="modal-content">
-    <h2 style="font-size:17px; font-weight:800; margin-bottom:20px; color:var(--title);">Configuración</h2>
-
-    <div style="margin-bottom:20px;">
-      <h3 style="font-size:12px; font-weight:700; margin-bottom:8px; color:var(--muted); text-transform:uppercase;">Tema</h3>
-      <div style="display:flex; gap:8px;">
-        <button class="chip" id="themeDark" style="flex:1;">🌙 Oscuro</button>
-        <button class="chip" id="themeLight" style="flex:1;">☀️ Claro</button>
+    <h2 class="modal-h2">Configuración</h2>
+    <div class="field-group">
+      <div class="field-label">Tema</div>
+      <div class="field-row">
+        <button class="chip" data-theme-btn="dark">🌙 Oscuro</button>
+        <button class="chip" data-theme-btn="light">☀ Claro</button>
       </div>
     </div>
-
-    <div style="margin-bottom:20px;">
-      <h3 style="font-size:12px; font-weight:700; margin-bottom:8px; color:var(--muted); text-transform:uppercase;">Acento</h3>
-      <div style="display:flex; gap:8px;">
-        <button class="chip" id="accentGold" style="flex:1;">🟡 Dorado</button>
-        <button class="chip" id="accentGreen" style="flex:1;">🟢 Verde</button>
-        <button class="chip" id="accentBlue" style="flex:1;">🔵 Azul</button>
+    <div class="field-group">
+      <div class="field-label">Acento</div>
+      <div class="field-row">
+        <button class="chip" data-accent-btn="dorado">Dorado</button>
+        <button class="chip" data-accent-btn="verde">Verde</button>
+        <button class="chip" data-accent-btn="azul">Azul</button>
       </div>
     </div>
-
-    <button class="btn-primary" style="width:100%; margin-bottom:12px;" id="installBtn">📲 Instalar app</button>
-    <button class="btn-primary" style="width:100%;" id="closeSettings">Cerrar</button>
+    <button class="btn btn-primary" style="width:100%; margin-bottom:12px; display:none;" id="installBtn">📲 Instalar app</button>
+    <button class="btn" style="width:100%;" id="closeSettings">Cerrar</button>
   </div>
 </div>
 
-<div class="ficha" id="ficha">
+<div class="ficha" id="ficha" role="dialog" aria-modal="true">
   <div class="ficha-head">
-    <button onclick="history.back()" style="background:none; border:none; font-size:20px; cursor:pointer; color:var(--txt);">←</button>
-    <span style="flex:1;"></span>
-    <button onclick="closeFicha()" style="background:none; border:none; font-size:20px; cursor:pointer; color:var(--txt);">✕</button>
+    <button class="ficha-back" id="fichaBack" aria-label="Volver">←</button>
+    <span style="font-size:13px; font-weight:700; color:var(--muted);">Tutorial</span>
   </div>
   <div class="ficha-body">
     <div class="player" id="playerContainer"></div>
-    <h1 id="fichaTitle" style="font-size:20px; font-weight:800; margin:20px 0 8px; color:var(--title);"></h1>
-    <div id="fichaMeta" style="display:flex; align-items:center; gap:12px; margin-bottom:20px; font-size:12px; color:var(--muted);"></div>
-    <p id="fichaDesc" style="font-size:14px; line-height:1.6; margin-bottom:20px; color:var(--txt);"></p>
-    <div id="fichaPasos" style="margin-bottom:20px;"></div>
-    <div id="fichaAcciones" style="display:flex; gap:8px; margin-bottom:20px;"></div>
-    <div id="fichaRelacionados" style="margin-bottom:40px;"></div>
+    <h1 class="ficha-title" id="fichaTitle"></h1>
+    <div class="ficha-meta" id="fichaMeta"></div>
+    <p class="ficha-desc" id="fichaDesc"></p>
+    <div id="fichaPasos"></div>
+    <div class="ficha-acciones" id="fichaAcciones"></div>
+    <div class="ficha-rel" id="fichaRelacionados"></div>
   </div>
 </div>
 
-<script>
-// Estado
-const st = {
-  tutoriales: [],
-  sinonimos: {},
-  categoryIdx: {},
-  filtros: { q: '', cat: '' },
-  tema: 'dark',
-  acento: 'dorado',
-  install: null,
-  fichaActual: null,
-};
+<div class="toast" id="toast"></div>
 
-// Cargar config
-function loadConfig() {
-  try {
-    const cfg = JSON.parse(localStorage.getItem('confianza_tut_cfg_v1') || '{}');
-    if (cfg.tema) st.tema = cfg.tema;
-    if (cfg.acento) st.acento = cfg.acento;
-  } catch {}
+<script>
+"use strict";
+
+const st = {
+  tutoriales: [], categoryIdx: {}, sinonimos: {},
+  filtros: { q:'', cat:'' },
+  tema:'dark', acento:'dorado', install:null, scrollY:0,
+};
+const PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%23111418' width='16' height='9'/%3E%3C/svg%3E";
+const STOP = new Set(['de','la','el','los','las','un','una','y','o','en','para','por','con','del','al','como','que','se','su','mi']);
+const SUFIJOS = ['aciones','acion','iciones','icion','amiento','imiento','mente','adores','adora','ador','ando','iendo','aron','ieron','aste','iste','aba','ado','ada','ido','ida','ar','er','ir','as','es','os','a','e','o','s'];
+const PESOS = { titulo:10, palabras_clave:7, etiquetas:6, categoria:5, subcategoria:5, pasos:3, descripcion:2, transcripcion:1 };
+
+// ---------- utilidades ----------
+function esc(s){ const m={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}; return String(s==null?'':s).replace(/[&<>"']/g,c=>m[c]); }
+function norm(s){ return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ñ/g,'n').replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim(); }
+function stem(w){ for(const suf of SUFIJOS){ if(w.endsWith(suf) && w.length-suf.length>=4) return w.slice(0,-suf.length); } return w; }
+function tokens(s){ return norm(s).split(' ').filter(t=>t && !STOP.has(t)); }
+function fmtDur(sec){ if(!sec) return ''; const m=Math.floor(sec/60), s=sec%60; return m+':'+String(s).padStart(2,'0'); }
+function fmtFecha(f){ if(!f) return ''; const d=new Date(f); if(isNaN(d)) return ''; return d.toLocaleDateString('es-CL',{day:'2-digit',month:'2-digit',year:'numeric'}); }
+function levenshtein(a,b){
+  const m=a.length,n=b.length; if(!m) return n; if(!n) return m;
+  const prev=Array.from({length:n+1},(_,i)=>i);
+  for(let i=1;i<=m;i++){ let diag=prev[0]; prev[0]=i;
+    for(let j=1;j<=n;j++){ const t=prev[j]; const cost=a[i-1]===b[j-1]?0:1;
+      prev[j]=Math.min(prev[j]+1, prev[j-1]+1, diag+cost); diag=t; } }
+  return prev[n];
+}
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),1600); }
+function debounce(fn,ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; }
+
+// ---------- configuración ----------
+function loadConfig(){
+  try{ const c=JSON.parse(localStorage.getItem('confianza_tut_cfg_v1')||'{}');
+    if(c.tema) st.tema=c.tema; if(c.acento) st.acento=c.acento; }catch{}
   applyTheme();
 }
-
-function applyTheme() {
-  document.documentElement.setAttribute('data-theme', st.tema);
-  document.documentElement.setAttribute('data-accent', st.acento);
-  saveConfig();
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme',st.tema);
+  document.documentElement.setAttribute('data-accent',st.acento);
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', st.tema==='dark'?'#181c21':'#ffffff');
+  document.querySelectorAll('[data-theme-btn]').forEach(b=>b.classList.toggle('active', b.dataset.themeBtn===st.tema));
+  document.querySelectorAll('[data-accent-btn]').forEach(b=>b.classList.toggle('active', b.dataset.accentBtn===st.acento));
+  try{ localStorage.setItem('confianza_tut_cfg_v1',JSON.stringify({tema:st.tema,acento:st.acento})); }catch{}
 }
 
-function saveConfig() {
-  try {
-    localStorage.setItem('confianza_tut_cfg_v1', JSON.stringify({ tema: st.tema, acento: st.acento }));
-  } catch {}
-}
-
-// Normalización
-function norm(s) {
-  return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .replace(/ñ/g, 'n').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
-}
-
-// Escape HTML
-function esc(s) {
-  const m = { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":"&#39;" };
-  return (s || '').replace(/[&<>"']/g, c => m[c]);
-}
-
-// Cargar datos
-async function loadData() {
-  try {
-    const res = await fetch('data/tutoriales.json?t=' + Date.now(), { cache: 'no-store' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    st.tutoriales = data.tutoriales || [];
-    st.categoryIdx = {};
-    (data.categorias || []).forEach(c => { st.categoryIdx[c.id] = c; });
-
-    try {
-      const sinRes = await fetch('data/sinonimos.json?t=' + Date.now(), { cache: 'no-store' });
-      if (sinRes.ok) {
-        const sinData = await sinRes.json();
-        sinData.grupos.forEach(g => {
-          g.forEach(t => { st.sinonimos[t] = g; });
-        });
-      }
-    } catch {}
-
+// ---------- carga de datos ----------
+async function loadData(){
+  const main=document.getElementById('main');
+  main.innerHTML='<div class="result-list">'+Array(3).fill('<div class="skeleton"><div class="sk-thumb"></div><div class="sk-line" style="width:70%"></div><div class="sk-line" style="width:40%"></div></div>').join('')+'</div>';
+  try{
+    const res=await fetch('data/tutoriales.json?t='+Date.now(),{cache:'no-store'});
+    if(!res.ok) throw new Error('No se pudo cargar el catálogo (HTTP '+res.status+')');
+    const data=await res.json();
+    st.tutoriales=(data.tutoriales||[]).map((t,i)=>({...t, _i:i}));
+    st.categoryIdx={}; (data.categorias||[]).forEach(c=>{ st.categoryIdx[c.id]=c; });
+    try{
+      const sr=await fetch('data/sinonimos.json?t='+Date.now(),{cache:'no-store'});
+      if(sr.ok){ const sd=await sr.json(); (sd.grupos||[]).forEach(g=>{ const ng=g.map(norm); ng.forEach(t=>{ st.sinonimos[t]=ng; }); }); }
+    }catch{}
+    buildIndex();
     render();
     handleHash();
-  } catch (err) {
-    document.getElementById('main').innerHTML =
-      '<div class="empty-state"><div class="empty-state-icon">❌</div>' +
-      '<h2 class="empty-state-title">Error al cargar</h2>' +
-      '<p class="empty-state-text">' + esc(err.message) + '</p>' +
-      '<button class="btn-primary" onclick="location.reload()">Reintentar</button></div>';
+  }catch(err){
+    main.innerHTML='<div class="empty-state"><div class="empty-state-icon">📡</div>'+
+      '<h2 class="empty-state-title">Error al cargar</h2>'+
+      '<p class="empty-state-text">'+esc(err.message)+'</p>'+
+      '<button class="btn btn-primary" id="retryBtn">Reintentar</button></div>';
+    document.getElementById('retryBtn')?.addEventListener('click',loadData);
   }
 }
 
-// Buscador simple (fase 1)
-function search(q) {
-  const qnorm = norm(q);
-  if (!qnorm) return st.tutoriales.filter(t => t.estado === 'publicado');
-
-  return st.tutoriales.filter(t => {
-    if (t.estado !== 'publicado') return false;
-    const busqueda = norm(t.titulo + ' ' + (t.descripcion || '') + ' ' + (t.etiquetas || []).join(' '));
-    return busqueda.includes(qnorm);
-  }).sort((a, b) => {
-    const aScore = norm(a.titulo).includes(qnorm) ? 10 : 1;
-    const bScore = norm(b.titulo).includes(qnorm) ? 10 : 1;
-    return bScore - aScore;
+// ---------- índice de búsqueda ----------
+function buildIndex(){
+  st.tutoriales.forEach(t=>{
+    if(t.estado!=='publicado'){ t._tokens=[]; return; }
+    const campos={
+      titulo:t.titulo, palabras_clave:(t.palabras_clave||[]).join(' '),
+      etiquetas:(t.etiquetas||[]).join(' '),
+      categoria:st.categoryIdx[t.categoria]?.nombre||t.categoria||'',
+      subcategoria:t.subcategoria||'', pasos:(t.pasos||[]).join(' '),
+      descripcion:t.descripcion||'', transcripcion:t.transcripcion||'',
+    };
+    const idx=[];
+    for(const campo in campos){
+      const peso=PESOS[campo]||1;
+      tokens(campos[campo]).forEach(term=>{ idx.push({term, stem:stem(term), peso}); });
+    }
+    t._tokens=idx;
+    t._allTerms=[...new Set(idx.map(x=>x.term))];
   });
 }
 
-// Renderizar listado
-function render() {
-  const publicados = st.tutoriales.filter(t => t.estado === 'publicado');
+// ---------- buscador ----------
+function scoreTutorial(t, qterms){
+  let total=0;
+  for(const q of qterms){
+    const qs=stem(q); let best=0;
+    for(const idx of t._tokens){
+      let f=0;
+      if(idx.term===q) f=1.0;
+      else if(idx.stem===qs) f=0.9;
+      else if(q.length>=2 && idx.term.startsWith(q)) f=0.8;
+      else if(q.length>=3 && idx.term.includes(q)) f=0.6;
+      else if(st.sinonimos[q] && st.sinonimos[q].includes(idx.term)) f=0.7;
+      else { const d=levenshtein(q,idx.term);
+        if(q.length>=4 && ((q.length<=6&&d<=1)||(q.length>=7&&d<=2))) f=Math.max(0,0.55-0.1*d); }
+      if(f>0){ const s=f*idx.peso; if(s>best) best=s; }
+    }
+    if(best===0) return { score:0, hits:0 };
+    total+=best;
+  }
+  // bonus: título empieza con la consulta
+  const tituloNorm=norm(t.titulo);
+  if(qterms.length && tituloNorm.startsWith(qterms.join(' '))) total*=1.15;
+  if(t.destacado) total+=5;
+  return { score:total, hits:qterms.length };
+}
+function search(q){
+  const publicados=st.tutoriales.filter(t=>t.estado==='publicado');
+  const qterms=tokens(q);
+  if(!qterms.length) return publicados.slice().sort((a,b)=>(a.orden||0)-(b.orden||0));
+  const scored=[];
+  for(const t of publicados){ const r=scoreTutorial(t,qterms); if(r.score>0) scored.push({t, score:r.score}); }
+  scored.sort((a,b)=> b.score-a.score || (a.t.orden||0)-(b.t.orden||0));
+  return scored.map(x=>x.t);
+}
+// "¿Quisiste decir?" — término del índice más cercano
+function didYouMean(q){
+  const qterms=tokens(q); if(!qterms.length) return null;
+  const last=qterms[qterms.length-1]; if(last.length<4) return null;
+  let best=null, bestD=99;
+  for(const t of st.tutoriales){ if(!t._allTerms) continue;
+    for(const term of t._allTerms){
+      if(term===last) return null; // ya coincide exacto
+      const d=levenshtein(last,term);
+      if(d>0 && d<bestD && d<=2 && Math.abs(term.length-last.length)<=2){ bestD=d; best=term; }
+    }
+  }
+  return best;
+}
 
-  // Categorías
-  const cats = new Set();
-  publicados.forEach(t => { if (t.categoria) cats.add(t.categoria); });
-  const catDom = document.getElementById('categoryContainer');
-  catDom.innerHTML = '';
-  [...cats].sort().forEach(cid => {
-    const chip = document.createElement('button');
-    chip.className = 'chip' + (st.filtros.cat === cid ? ' active' : '');
-    chip.textContent = st.categoryIdx[cid]?.nombre || cid;
-    chip.onclick = () => {
-      st.filtros.cat = st.filtros.cat === cid ? '' : cid;
-      render();
-    };
-    catDom.appendChild(chip);
-  });
+// ---------- render ----------
+function highlight(text, qterms){
+  const safe=esc(text);
+  if(!qterms.length) return safe;
+  // resaltar sobre el texto normalizado, mapeando a original de forma simple por palabra
+  return safe.split(/(\s+)/).map(word=>{
+    const wn=norm(word);
+    if(wn && qterms.some(q=> wn===q || wn.startsWith(q) || stem(wn)===stem(q))) return '<mark>'+word+'</mark>';
+    return word;
+  }).join('');
+}
+function cardHTML(t, qterms){
+  const cat=st.categoryIdx[t.categoria]?.nombre || t.categoria || 'Sin categoría';
+  const dur=fmtDur(t.duracion_seg);
+  return '<article class="card" data-open="'+esc(t.id)+'" tabindex="0" role="button">'+
+    '<div class="card-thumb"><img src="'+esc(t.thumbnail||PLACEHOLDER)+'" alt="" loading="lazy" decoding="async" width="640" height="360" onerror="this.src=\''+PLACEHOLDER+'\'">'+
+      '<div class="card-thumb-overlay"><span class="play-badge"></span></div>'+
+      (dur?'<span class="dur-badge">'+esc(dur)+'</span>':'')+
+    '</div>'+
+    '<div class="card-category">'+esc(cat)+'</div>'+
+    '<h3 class="card-title">'+highlight(t.titulo, qterms)+'</h3>'+
+    (t.descripcion?'<p class="card-desc">'+highlight(t.descripcion, qterms)+'</p>':'')+
+    '<div class="card-tags">'+(t.etiquetas||[]).slice(0,3).map(tag=>'<span class="tag">'+esc(tag)+'</span>').join('')+'</div>'+
+  '</article>';
+}
+function renderCategories(publicados){
+  const cats=[...new Set(publicados.map(t=>t.categoria).filter(Boolean))];
+  cats.sort((a,b)=>(st.categoryIdx[a]?.orden||99)-(st.categoryIdx[b]?.orden||99));
+  const dom=document.getElementById('categoryContainer');
+  if(cats.length<=1){ dom.innerHTML=''; return; }
+  dom.innerHTML='<button class="chip'+(st.filtros.cat===''?' active':'')+'" data-cat="">Todos</button>'+
+    cats.map(cid=>'<button class="chip'+(st.filtros.cat===cid?' active':'')+'" data-cat="'+esc(cid)+'">'+esc(st.categoryIdx[cid]?.nombre||cid)+'</button>').join('');
+}
+function render(){
+  const publicados=st.tutoriales.filter(t=>t.estado==='publicado');
+  renderCategories(publicados);
 
-  // Resultados
-  let resultados = search(st.filtros.q);
-  if (st.filtros.cat) resultados = resultados.filter(t => t.categoria === st.filtros.cat);
+  const qterms=tokens(st.filtros.q);
+  let resultados=search(st.filtros.q);
+  if(st.filtros.cat) resultados=resultados.filter(t=>t.categoria===st.filtros.cat);
 
-  const main = document.getElementById('main');
-  if (!resultados.length) {
-    main.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📺</div>' +
-      '<h2 class="empty-state-title">Sin resultados</h2>' +
-      '<p class="empty-state-text">Intenta con otra búsqueda o categoría</p>' +
-      '<button class="btn-primary" onclick="document.getElementById(\'searchInput\').value=\'\'; location.hash=\'#/\'; render();">Limpiar</button></div>';
+  // sugerencia "¿quisiste decir?"
+  const suggestDom=document.getElementById('suggest');
+  if(st.filtros.q && !resultados.length){
+    const dym=didYouMean(st.filtros.q);
+    suggestDom.innerHTML = dym ? '¿Quisiste decir <a data-dym="'+esc(dym)+'">'+esc(dym)+'</a>?' : '';
+  } else suggestDom.innerHTML='';
+
+  const main=document.getElementById('main');
+  if(!resultados.length){
+    main.innerHTML='<div class="empty-state"><div class="empty-state-icon">🔍</div>'+
+      '<h2 class="empty-state-title">Sin resultados</h2>'+
+      '<p class="empty-state-text">No encontramos tutoriales para tu búsqueda.<br>Prueba con otras palabras.</p>'+
+      '<button class="btn btn-primary" id="clearAll">Limpiar búsqueda</button></div>';
+    document.getElementById('clearAll')?.addEventListener('click',clearSearch);
     return;
   }
-
-  main.innerHTML = '<div class="result-count">' + resultados.length + ' tutorial' + (resultados.length !== 1 ? 's' : '') + '</div>' +
-    '<div class="result-list">' + resultados.map(t => `
-    <div class="card" onclick="openFicha('${esc(t.id)}')">
-      <div class="card-thumb">
-        <img src="${t.thumbnail || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 9%27%3E%3Crect fill=%27%23000%27 width=%2716%27 height=%279%27/%3E%3C/svg%3E'}" alt="">
-        <div class="card-thumb-overlay"></div>
-      </div>
-      <div class="card-category">${esc(st.categoryIdx[t.categoria]?.nombre || t.categoria || 'Sin categoría')}</div>
-      <h3 class="card-title">${esc(t.titulo)}</h3>
-      <p class="card-desc">${esc((t.descripcion || 'Sin descripción').substring(0, 60))}</p>
-      <div class="card-tags">${(t.etiquetas || []).slice(0, 3).map(tag => `<span class="tag">${esc(tag)}</span>`).join('')}</div>
-    </div>
-  `).join('') + '</div>';
+  const label=st.filtros.q ? resultados.length+' resultado'+(resultados.length!==1?'s':'') : resultados.length+' tutorial'+(resultados.length!==1?'es':'');
+  main.innerHTML='<div class="result-count">'+label+'</div><div class="result-list">'+resultados.map(t=>cardHTML(t,qterms)).join('')+'</div>';
 }
 
-// Ficha de tutorial
-function openFicha(id) {
-  const t = st.tutoriales.find(x => x.id === id);
-  if (!t) return;
-  st.fichaActual = t;
-
-  // Player
-  const playerContainer = document.getElementById('playerContainer');
-  if (t.video) {
-    let iframeHtml = '';
-    if (t.video.proveedor === 'drive') {
-      iframeHtml = `<iframe src="https://drive.google.com/file/d/${esc(t.video.id)}/preview" allow="fullscreen" loading="lazy"></iframe>`;
-    } else if (t.video.proveedor === 'youtube') {
-      iframeHtml = `<iframe src="https://www.youtube-nocookie.com/embed/${esc(t.video.id)}?rel=0&modestbranding=1&playsinline=1" allow="fullscreen" loading="lazy"></iframe>`;
-    }
-    playerContainer.innerHTML = iframeHtml ? `<div class="player">${iframeHtml}</div>` :
-      '<div class="player"><div class="player-facade"></div></div>';
+// ---------- ficha / reproductor ----------
+function iframeSrc(v){
+  if(!v||!v.id) return null;
+  if(!/^[A-Za-z0-9_-]{10,64}$/.test(v.id)) return null;
+  if(v.proveedor==='drive') return 'https://drive.google.com/file/d/'+v.id+'/preview';
+  if(v.proveedor==='youtube') return 'https://www.youtube-nocookie.com/embed/'+v.id+'?rel=0&modestbranding=1&playsinline=1&autoplay=1';
+  return null;
+}
+function openFicha(id, push=true){
+  const t=st.tutoriales.find(x=>x.id===id); if(!t) return;
+  st.scrollY=window.scrollY;
+  const pc=document.getElementById('playerContainer');
+  const src=iframeSrc(t.video);
+  if(src){
+    // Facade: thumbnail + play; iframe solo al tocar
+    const poster=t.thumbnail||PLACEHOLDER;
+    pc.innerHTML='<div class="player-facade" id="facade" style="background-image:url(\''+esc(poster)+'\')"><span class="play-badge"></span></div>';
+    document.getElementById('facade').addEventListener('click',()=>{
+      pc.innerHTML='<iframe src="'+esc(src)+'" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+    });
   } else {
-    playerContainer.innerHTML = '';
+    pc.innerHTML='<div class="player-facade" style="cursor:default"><span style="color:#fff;font-size:13px;text-align:center;padding:20px">Video no disponible</span></div>';
   }
 
-  document.getElementById('fichaTitle').textContent = esc(t.titulo);
+  document.getElementById('fichaTitle').textContent=t.titulo;
 
-  let meta = [];
-  if (t.categoria) meta.push(st.categoryIdx[t.categoria]?.nombre || t.categoria);
-  if (t.duracion_seg) meta.push((Math.floor(t.duracion_seg / 60)) + ' min');
-  if (t.fecha) {
-    const d = new Date(t.fecha);
-    meta.push(d.toLocaleDateString('es-CL'));
-  }
-  document.getElementById('fichaMeta').textContent = meta.join(' • ');
+  const meta=[];
+  if(t.categoria) meta.push(st.categoryIdx[t.categoria]?.nombre||t.categoria);
+  if(t.duracion_seg) meta.push('⏱ '+fmtDur(t.duracion_seg));
+  if(t.fecha) meta.push(fmtFecha(t.fecha));
+  document.getElementById('fichaMeta').textContent=meta.join('  ·  ');
 
-  document.getElementById('fichaDesc').textContent = t.descripcion || 'Sin descripción';
+  document.getElementById('fichaDesc').textContent=t.descripcion||'';
 
-  let pasos = '';
-  if (t.pasos && t.pasos.length) {
-    pasos = '<h3 style="font-size:14px; font-weight:700; margin-bottom:8px; color:var(--title);">Pasos</h3>' +
-      '<ol style="margin-left:20px; color:var(--txt);">' +
-      t.pasos.map(p => `<li style="margin-bottom:6px;">${esc(p)}</li>`).join('') +
-      '</ol>';
-  }
-  document.getElementById('fichaPasos').innerHTML = pasos;
+  const pasosDom=document.getElementById('fichaPasos');
+  if(t.pasos&&t.pasos.length){
+    pasosDom.innerHTML='<h3 class="ficha-section-h">Pasos</h3><ol class="ficha-pasos">'+t.pasos.map(p=>'<li>'+esc(p)+'</li>').join('')+'</ol>';
+  } else pasosDom.innerHTML='';
 
-  let acciones = '';
-  if (t.video && t.video.proveedor === 'drive') {
-    acciones += `<button class="btn-primary" onclick="clip('${esc(`https://drive.google.com/file/d/${t.video.id}/preview`)}')">📋 Copiar enlace</button>`;
-  }
-  acciones += `<button class="btn-primary" onclick="whatsapp('${esc(t.titulo)}')">💬 Compartir</button>`;
-  document.getElementById('fichaAcciones').innerHTML = acciones;
+  const acc=[];
+  acc.push('<button class="btn" data-copy>🔗 Copiar enlace</button>');
+  acc.push('<button class="btn" data-share>💬 Compartir por WhatsApp</button>');
+  document.getElementById('fichaAcciones').innerHTML=acc.join('');
 
-  // Relacionados (misma categoría)
-  const relacionados = st.tutoriales.filter(x => x.id !== t.id && x.estado === 'publicado' && x.categoria === t.categoria).slice(0, 3);
-  let relHtml = '';
-  if (relacionados.length) {
-    relHtml = '<h3 style="font-size:14px; font-weight:700; margin-bottom:12px; color:var(--title);">Relacionados</h3>' +
-      '<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px;">' +
-      relacionados.map(r => `
-        <div class="card" style="padding:12px;" onclick="openFicha('${esc(r.id)}')">
-          <div class="card-thumb" style="margin-bottom:8px;">
-            <img src="${r.thumbnail || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 9%27%3E%3Crect fill=%27%23000%27 width=%2716%27 height=%279%27/%3E%3C/svg%3E'}" alt="">
-            <div class="card-thumb-overlay"></div>
-          </div>
-          <h4 class="card-title" style="font-size:13px;">${esc(r.titulo.substring(0, 30))}</h4>
-        </div>
-      `).join('') +
-      '</div>';
-  }
-  document.getElementById('fichaRelacionados').innerHTML = relHtml;
+  const rel=st.tutoriales.filter(x=>x.id!==t.id && x.estado==='publicado' && x.categoria===t.categoria).slice(0,4);
+  const relDom=document.getElementById('fichaRelacionados');
+  relDom.innerHTML = rel.length ? '<h3 class="ficha-section-h">Relacionados</h3><div class="rel-grid">'+
+    rel.map(r=>'<article class="card" data-open="'+esc(r.id)+'" style="padding:12px" tabindex="0" role="button">'+
+      '<div class="card-thumb" style="margin-bottom:8px"><img src="'+esc(r.thumbnail||PLACEHOLDER)+'" alt="" loading="lazy" onerror="this.src=\''+PLACEHOLDER+'\'"><div class="card-thumb-overlay"><span class="play-badge" style="width:36px;height:36px"></span></div></div>'+
+      '<h4 class="card-title" style="font-size:13px">'+esc(r.titulo)+'</h4></article>').join('')+'</div>' : '';
 
   document.getElementById('ficha').classList.add('open');
-  history.pushState(null, '', '#/t/' + t.slug);
+  document.getElementById('ficha').scrollTop=0;
+  if(push) history.pushState({ficha:t.slug},'', '#/t/'+t.slug);
+}
+function closeFicha(){
+  const f=document.getElementById('ficha');
+  f.classList.remove('open');
+  document.getElementById('playerContainer').innerHTML=''; // detiene el video
+  window.scrollTo(0, st.scrollY);
 }
 
-function closeFicha() {
-  document.getElementById('ficha').classList.remove('open');
-  st.fichaActual = null;
+// ---------- acciones ----------
+function copyLink(){
+  const url=location.href;
+  if(navigator.clipboard){ navigator.clipboard.writeText(url).then(()=>toast('Enlace copiado ✓')).catch(fallbackCopy); }
+  else fallbackCopy();
+  function fallbackCopy(){ const ta=document.createElement('textarea'); ta.value=url; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); toast('Enlace copiado ✓');}catch{} document.body.removeChild(ta); }
+}
+function shareWhatsApp(){
+  const t=st.tutoriales.find(x=>'#/t/'+x.slug===location.hash);
+  const titulo=t?t.titulo:'este tutorial';
+  const msg=encodeURIComponent('Mira este tutorial: '+titulo+'\n'+location.href);
+  window.open('https://wa.me/?text='+msg,'_blank','noopener');
+}
+function clearSearch(){
+  st.filtros.q=''; st.filtros.cat='';
+  document.getElementById('searchInput').value='';
+  document.getElementById('searchClear').classList.remove('show');
+  updateURL(); render();
 }
 
-// Acciones
-function clip(text) {
-  navigator.clipboard?.writeText(text).then(() => {
-    alert('Enlace copiado ✓');
-  }).catch(() => {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    alert('Enlace copiado ✓');
-  });
+// ---------- router / URL ----------
+function updateURL(){
+  const p=new URLSearchParams();
+  if(st.filtros.q) p.set('q',st.filtros.q);
+  if(st.filtros.cat) p.set('cat',st.filtros.cat);
+  const qs=p.toString();
+  const base=location.pathname;
+  history.replaceState(history.state,'', qs?base+'?'+qs:base+(location.hash&&location.hash.startsWith('#/t/')?'':''));
 }
-
-function whatsapp(titulo) {
-  const msg = encodeURIComponent(`Mira este tutorial: ${titulo}\n${window.location.href}`);
-  window.open(`https://wa.me/56927690949?text=${msg}`);
+function readURL(){
+  const p=new URLSearchParams(location.search);
+  st.filtros.q=p.get('q')||''; st.filtros.cat=p.get('cat')||'';
+  const si=document.getElementById('searchInput');
+  si.value=st.filtros.q;
+  document.getElementById('searchClear').classList.toggle('show', !!st.filtros.q);
 }
-
-// Router hash
-function handleHash() {
-  const hash = window.location.hash.slice(1) || '/';
-  if (hash.startsWith('/t/')) {
-    const slug = hash.slice(3);
-    const t = st.tutoriales.find(x => x.slug === slug);
-    if (t) openFicha(t.id);
+function handleHash(){
+  const h=location.hash;
+  if(h.startsWith('#/t/')){
+    const slug=h.slice(4);
+    const t=st.tutoriales.find(x=>x.slug===slug);
+    if(t){ openFicha(t.id,false); return; }
   }
+  if(document.getElementById('ficha').classList.contains('open')) closeFicha();
 }
 
-// Events
-document.getElementById('searchInput').addEventListener('input', (e) => {
-  st.filtros.q = e.target.value;
-  render();
+// ---------- eventos ----------
+const doSearch=debounce(()=>{ render(); updateURL(); },80);
+document.getElementById('searchInput').addEventListener('input',e=>{
+  st.filtros.q=e.target.value;
+  document.getElementById('searchClear').classList.toggle('show', !!e.target.value);
+  doSearch();
+});
+document.getElementById('searchClear').addEventListener('click',()=>{
+  clearSearch(); document.getElementById('searchInput').focus();
+});
+document.getElementById('suggest').addEventListener('click',e=>{
+  const a=e.target.closest('[data-dym]'); if(!a) return;
+  st.filtros.q=a.dataset.dym; document.getElementById('searchInput').value=st.filtros.q;
+  render(); updateURL();
 });
 
-document.getElementById('gearBtn').addEventListener('click', () => {
-  document.getElementById('settingsModal').classList.add('open');
+// delegación: abrir tarjetas (listado + relacionados)
+document.body.addEventListener('click',e=>{
+  const card=e.target.closest('[data-open]'); if(card){ openFicha(card.dataset.open); return; }
+  const catBtn=e.target.closest('[data-cat]'); if(catBtn){ st.filtros.cat=catBtn.dataset.cat; render(); updateURL(); return; }
+  if(e.target.closest('[data-copy]')){ copyLink(); return; }
+  if(e.target.closest('[data-share]')){ shareWhatsApp(); return; }
+});
+document.body.addEventListener('keydown',e=>{
+  const card=e.target.closest('[data-open]');
+  if(card && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); openFicha(card.dataset.open); }
 });
 
-document.getElementById('closeSettings').addEventListener('click', () => {
-  document.getElementById('settingsModal').classList.remove('open');
+document.getElementById('gearBtn').addEventListener('click',()=>document.getElementById('settingsModal').classList.add('open'));
+document.getElementById('closeSettings').addEventListener('click',()=>document.getElementById('settingsModal').classList.remove('open'));
+document.getElementById('settingsModal').addEventListener('click',e=>{ if(e.target.id==='settingsModal') e.target.classList.remove('open'); });
+document.querySelectorAll('[data-theme-btn]').forEach(b=>b.addEventListener('click',()=>{ st.tema=b.dataset.themeBtn; applyTheme(); }));
+document.querySelectorAll('[data-accent-btn]').forEach(b=>b.addEventListener('click',()=>{ st.acento=b.dataset.accentBtn; applyTheme(); }));
+
+document.getElementById('fichaBack').addEventListener('click',()=>history.back());
+
+// atajos de teclado
+document.addEventListener('keydown',e=>{
+  if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey))) && !/input|textarea/i.test(e.target.tagName)){
+    e.preventDefault(); document.getElementById('searchInput').focus();
+  }
+  if(e.key==='Escape'){
+    if(document.getElementById('settingsModal').classList.contains('open')){ document.getElementById('settingsModal').classList.remove('open'); return; }
+    if(document.getElementById('ficha').classList.contains('open')){ history.back(); return; }
+    if(st.filtros.q||st.filtros.cat) clearSearch();
+  }
 });
 
-document.getElementById('themeDark').addEventListener('click', () => {
-  st.tema = 'dark';
-  applyTheme();
-  document.getElementById('themeDark').classList.add('active');
-  document.getElementById('themeLight').classList.remove('active');
+window.addEventListener('popstate',handleHash);
+
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); st.install=e;
+  const b=document.getElementById('installBtn'); b.style.display='flex';
+  b.addEventListener('click',async()=>{ if(st.install){ st.install.prompt(); await st.install.userChoice; st.install=null; b.style.display='none'; } });
 });
 
-document.getElementById('themeLight').addEventListener('click', () => {
-  st.tema = 'light';
-  applyTheme();
-  document.getElementById('themeLight').classList.add('active');
-  document.getElementById('themeDark').classList.remove('active');
-});
-
-['accentGold', 'accentGreen', 'accentBlue'].forEach(id => {
-  document.getElementById(id).addEventListener('click', () => {
-    st.acento = id.replace('accent', '').toLowerCase();
-    applyTheme();
-    ['accentGold', 'accentGreen', 'accentBlue'].forEach(x => document.getElementById(x).classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-  });
-});
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  st.install = e;
-  document.getElementById('installBtn').addEventListener('click', async () => {
-    if (st.install) {
-      st.install.prompt();
-      st.install = null;
-    }
-  });
-});
-
-window.addEventListener('hashchange', handleHash);
-
-// Iniciar
+// ---------- init ----------
 loadConfig();
+readURL();
 loadData();
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
-}
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 </script>
 </body>
 </html>

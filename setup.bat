@@ -44,7 +44,7 @@ echo ✓ Configurado
 
 echo [2/3] Agregando remote origin...
 git remote remove origin >nul 2>&1
-git remote add origin https://github.com/cotizadora/confianza-tutoriales.git
+git remote add origin https://github.com/seccion-administrativa/confianza-inmobiliaria.git
 echo ✓ Remote agregado
 
 echo [3/3] Haciendo push a GitHub...
@@ -64,7 +64,7 @@ if errorlevel 1 (
 echo.
 echo ════════════════════════════════════════════════
 echo La app estará en vivo en:
-echo https://cotizadora.github.io/confianza-tutoriales/
+echo https://seccion-administrativa.github.io/confianza-inmobiliaria/
 echo.
 echo Espera 2-3 minutos para que GitHub active Pages.
 echo ════════════════════════════════════════════════

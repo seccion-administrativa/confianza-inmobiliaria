@@ -63,7 +63,7 @@ Plataforma de tutoriales en video para capacitar ejecutivos y vendedores de arri
 ## 📚 Stack
 
 HTML + CSS + JavaScript vanilla (sin dependencias).  
-Hosting: GitHub Pages (`cotizadora.github.io/confianza-tutoriales/`)
+Hosting: GitHub Pages (`seccion-administrativa.github.io/confianza-inmobiliaria/`)
 
 ---
 

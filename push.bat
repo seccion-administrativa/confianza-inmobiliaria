@@ -11,7 +11,7 @@ echo.
 
 REM Verificar que el repo existe en GitHub
 echo [1/4] Verificando conexión a GitHub...
-git ls-remote https://github.com/cotizadora/confianza-tutoriales.git >nul 2>&1
+git ls-remote https://github.com/seccion-administrativa/confianza-inmobiliaria.git >nul 2>&1
 if errorlevel 1 (
     echo.
     echo ❌ ERROR: El repo no existe en GitHub
@@ -35,7 +35,7 @@ REM Agregar remote si no existe
 echo [2/4] Configurando remote...
 git remote get-url origin >nul 2>&1
 if errorlevel 1 (
-    git remote add origin https://github.com/cotizadora/confianza-tutoriales.git
+    git remote add origin https://github.com/seccion-administrativa/confianza-inmobiliaria.git
     echo ✓ Remote agregado
 ) else (
     echo ✓ Remote ya existe
@@ -73,7 +73,7 @@ echo ╔════════════════════════
 echo ║  ✅ PUSH COMPLETADO                           ║
 echo ║                                                ║
 echo ║  La app estará en vivo en:                    ║
-echo ║  https://cotizadora.github.io/confianza-     ║
+echo ║  https://seccion-administrativa.github.io/confianza-inmobiliaria     ║
 echo ║  tutoriales/                                  ║
 echo ║                                                ║
 echo ║  (Espera 2-3 minutos para que GitHub         ║

@@ -2,18 +2,20 @@
   "version": 1,
   "actualizado": "2026-09-24T00:00:00-03:00",
   "categorias": [
-    {"id": "pendiente", "nombre": "Pendiente definir", "orden": 1, "icono": "📚", "sub": []}
+    {"id": "evaluacion", "nombre": "Evaluación de postulantes", "orden": 1, "icono": "📋", "sub": []},
+    {"id": "publicacion", "nombre": "Publicación de arriendos", "orden": 2, "icono": "🏠", "sub": []},
+    {"id": "plataforma", "nombre": "Uso de la plataforma", "orden": 3, "icono": "💻", "sub": []}
   ],
   "tutoriales": [
     {
       "id": "tut-001",
       "slug": "como-agregar-aval-y-link-para-evaluarse",
       "titulo": "Cómo agregar aval y link para evaluarse",
-      "descripcion": "PENDIENTE — ver el video",
-      "categoria": "pendiente",
+      "descripcion": "Aprende a agregar un aval y a generar el link para que el postulante se evalúe en la plataforma.",
+      "categoria": "evaluacion",
       "subcategoria": null,
       "etiquetas": ["aval", "evaluación", "link"],
-      "palabras_clave": ["codeudor", "postulante", "evaluar"],
+      "palabras_clave": ["codeudor", "postulante", "evaluar", "garante"],
       "pasos": [],
       "video": {
         "proveedor": "drive",
@@ -24,10 +26,10 @@
       "duracion_seg": null,
       "fecha": "2026-08-24",
       "orden": 1,
-      "estado": "borrador",
-      "thumbnail": "thumbs/tut-001.webp",
-      "destacado": false,
-      "plataforma": "Assetplan (PENDIENTE confirmar)",
+      "estado": "publicado",
+      "thumbnail": null,
+      "destacado": true,
+      "plataforma": "Assetplan",
       "transcripcion": null
     }
   ]
