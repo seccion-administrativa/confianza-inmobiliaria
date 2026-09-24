@@ -91,8 +91,30 @@ header { position:sticky; top:0; z-index:100; padding:calc(18px + env(safe-area-
 }
 .chip.active { border-color:var(--accent); background:color-mix(in srgb, var(--accent) 16%, transparent); color:var(--accent); }
 
+.hero { margin:0 20px 4px; padding:22px 20px; border-radius:20px; position:relative; overflow:hidden;
+  background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 22%, var(--surface)), var(--surface) 70%);
+  border:1px solid var(--border);
+}
+.hero::after { content:''; position:absolute; top:-40%; right:-10%; width:180px; height:180px; border-radius:50%;
+  background:radial-gradient(circle, color-mix(in srgb, var(--accent) 30%, transparent), transparent 70%);
+}
+.hero-eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--accent); margin-bottom:6px; }
+.hero-title { font-size:24px; font-weight:800; line-height:1.1; color:var(--title); margin-bottom:8px; text-wrap:balance; position:relative; }
+.hero-sub { font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:14px; max-width:36ch; position:relative; }
+.hero-stats { display:flex; gap:8px; flex-wrap:wrap; position:relative; }
+.hero-stat { font-size:12px; font-weight:700; color:var(--txt); background:var(--surface); border:1px solid var(--border);
+  padding:6px 12px; border-radius:999px; display:inline-flex; align-items:center; gap:6px;
+}
 .results { padding:14px 20px 60px; }
 .result-count { font-size:12px; color:var(--muted); margin-bottom:12px; }
+.doc-thumb { position:relative; width:100%; aspect-ratio:16/9; border-radius:12px; overflow:hidden; margin-bottom:12px;
+  background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, var(--field)), var(--field));
+  display:flex; align-items:center; justify-content:center; border:1px solid var(--border-soft);
+}
+.doc-thumb-icon { font-size:44px; }
+.fmt-badge { position:absolute; right:8px; bottom:8px; background:var(--accent); color:var(--accent-ink);
+  font-size:10px; font-weight:800; padding:3px 7px; border-radius:6px; text-transform:uppercase; letter-spacing:.04em;
+}
 .result-list { display:flex; flex-direction:column; gap:16px; }
 .section { margin-bottom:28px; }
 .section-header { display:flex; align-items:center; gap:8px; margin-bottom:14px;
@@ -462,14 +484,26 @@ function highlight(text, qterms){
     return word;
   }).join('');
 }
+function driveThumb(t){
+  if(t.thumbnail) return t.thumbnail;
+  if(t.video && t.video.proveedor==='drive') return 'https://drive.google.com/thumbnail?id='+t.video.id+'&sz=w640';
+  return PLACEHOLDER;
+}
+function docIcon(fmt){ return fmt==='pdf' ? '📕' : fmt==='docx' ? '📘' : '📄'; }
+function cardThumb(t){
+  if(t.tipo==='documento'){
+    return '<div class="doc-thumb"><span class="doc-thumb-icon">'+docIcon(t.formato)+'</span>'+
+      (t.formato?'<span class="fmt-badge">'+esc(t.formato)+'</span>':'')+'</div>';
+  }
+  const dur=fmtDur(t.duracion_seg);
+  return '<div class="card-thumb"><img src="'+esc(driveThumb(t))+'" alt="" loading="lazy" decoding="async" width="640" height="360" onerror="this.src=\''+PLACEHOLDER+'\'">'+
+    '<div class="card-thumb-overlay"><span class="play-badge"></span></div>'+
+    (dur?'<span class="dur-badge">'+esc(dur)+'</span>':'')+'</div>';
+}
 function cardHTML(t, qterms){
   const cat=st.categoryIdx[t.categoria]?.nombre || t.categoria || 'Sin categoría';
-  const dur=fmtDur(t.duracion_seg);
   return '<article class="card" data-open="'+esc(t.id)+'" tabindex="0" role="button">'+
-    '<div class="card-thumb"><img src="'+esc(t.thumbnail||PLACEHOLDER)+'" alt="" loading="lazy" decoding="async" width="640" height="360" onerror="this.src=\''+PLACEHOLDER+'\'">'+
-      '<div class="card-thumb-overlay"><span class="play-badge"></span></div>'+
-      (dur?'<span class="dur-badge">'+esc(dur)+'</span>':'')+
-    '</div>'+
+    cardThumb(t)+
     '<div class="card-category">'+esc(cat)+'</div>'+
     '<h3 class="card-title">'+highlight(t.titulo, qterms)+'</h3>'+
     (t.descripcion?'<p class="card-desc">'+highlight(t.descripcion, qterms)+'</p>':'')+
@@ -510,12 +544,24 @@ function render(){
   }
   const label=st.filtros.q ? resultados.length+' resultado'+(resultados.length!==1?'s':'') : resultados.length+' tutorial'+(resultados.length!==1?'es':'');
 
+  // Portada (hero) solo en vista inicial
+  const nVideos=publicados.filter(t=>t.tipo!=='documento').length;
+  const nDocs=publicados.filter(t=>t.tipo==='documento').length;
+  const heroHTML = (!st.filtros.q && !st.filtros.cat) ?
+    '<div class="hero"><div class="hero-eyebrow">Confianza Inmobiliaria</div>'+
+    '<h2 class="hero-title">Centro de Tutoriales</h2>'+
+    '<p class="hero-sub">Aprende a usar la plataforma paso a paso. Busca una duda o explora por categoría.</p>'+
+    '<div class="hero-stats">'+
+      (nVideos?'<span class="hero-stat">🎬 '+nVideos+' tutorial'+(nVideos!==1?'es':'')+'</span>':'')+
+      (nDocs?'<span class="hero-stat">📄 '+nDocs+' documento'+(nDocs!==1?'s':'')+'</span>':'')+
+    '</div></div>' : '';
+
   // Vista índice: sin búsqueda ni filtro de categoría → agrupar por categoría
   const cats=[...new Set(publicados.map(t=>t.categoria).filter(Boolean))];
   const usarIndice = !st.filtros.q && !st.filtros.cat && cats.length>=1;
   if(usarIndice){
     cats.sort((a,b)=>(st.categoryIdx[a]?.orden||99)-(st.categoryIdx[b]?.orden||99));
-    let html='<div class="result-count">'+label+'</div>';
+    let html=heroHTML+'<div class="result-count">'+label+'</div>';
     for(const cid of cats){
       const grupo=resultados.filter(t=>t.categoria===cid);
       if(!grupo.length) continue;
@@ -533,7 +579,7 @@ function render(){
     return;
   }
 
-  main.innerHTML='<div class="result-count">'+label+'</div><div class="result-list">'+resultados.map(t=>cardHTML(t,qterms)).join('')+'</div>';
+  main.innerHTML=heroHTML+'<div class="result-count">'+label+'</div><div class="result-list">'+resultados.map(t=>cardHTML(t,qterms)).join('')+'</div>';
 }
 
 // ---------- ficha / reproductor ----------
@@ -549,21 +595,26 @@ function openFicha(id, push=true){
   st.scrollY=window.scrollY;
   const pc=document.getElementById('playerContainer');
   const src=iframeSrc(t.video);
+  const esDoc=t.tipo==='documento';
   if(src){
-    // Facade: thumbnail + play; iframe solo al tocar
-    const poster=t.thumbnail||PLACEHOLDER;
-    pc.innerHTML='<div class="player-facade" id="facade" style="background-image:url(\''+esc(poster)+'\')"><span class="play-badge"></span></div>';
+    // Facade: iframe solo al tocar
+    if(esDoc){
+      pc.innerHTML='<div class="player-facade" id="facade" style="flex-direction:column;gap:10px;background:linear-gradient(135deg,#1d2228,#111418)"><span style="font-size:56px">'+docIcon(t.formato)+'</span><span style="color:#fff;font-weight:700;font-size:14px">Ver documento</span></div>';
+    } else {
+      pc.innerHTML='<div class="player-facade" id="facade" style="background-image:url(\''+esc(driveThumb(t))+'\')"><span class="play-badge"></span></div>';
+    }
     document.getElementById('facade').addEventListener('click',()=>{
       pc.innerHTML='<iframe src="'+esc(src)+'" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>';
     });
   } else {
-    pc.innerHTML='<div class="player-facade" style="cursor:default"><span style="color:#fff;font-size:13px;text-align:center;padding:20px">Video no disponible</span></div>';
+    pc.innerHTML='<div class="player-facade" style="cursor:default"><span style="color:#fff;font-size:13px;text-align:center;padding:20px">Contenido no disponible</span></div>';
   }
 
   document.getElementById('fichaTitle').textContent=t.titulo;
 
   const meta=[];
   if(t.categoria) meta.push(st.categoryIdx[t.categoria]?.nombre||t.categoria);
+  if(esDoc && t.formato) meta.push(t.formato.toUpperCase());
   if(t.duracion_seg) meta.push('⏱ '+fmtDur(t.duracion_seg));
   if(t.fecha) meta.push(fmtFecha(t.fecha));
   document.getElementById('fichaMeta').textContent=meta.join('  ·  ');
@@ -576,6 +627,7 @@ function openFicha(id, push=true){
   } else pasosDom.innerHTML='';
 
   const acc=[];
+  if(esDoc && t.video) acc.push('<a class="btn btn-primary" href="https://drive.google.com/file/d/'+esc(t.video.id)+'/view" target="_blank" rel="noopener">📥 Abrir en Drive</a>');
   acc.push('<button class="btn" data-copy>🔗 Copiar enlace</button>');
   acc.push('<button class="btn" data-share>💬 Compartir por WhatsApp</button>');
   document.getElementById('fichaAcciones').innerHTML=acc.join('');
