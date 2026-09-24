@@ -94,6 +94,15 @@ header { position:sticky; top:0; z-index:100; padding:calc(18px + env(safe-area-
 .results { padding:14px 20px 60px; }
 .result-count { font-size:12px; color:var(--muted); margin-bottom:12px; }
 .result-list { display:flex; flex-direction:column; gap:16px; }
+.section { margin-bottom:28px; }
+.section-header { display:flex; align-items:center; gap:8px; margin-bottom:14px;
+  padding-bottom:8px; border-bottom:1px solid var(--border-soft);
+}
+.section-icon { font-size:18px; }
+.section-title { font-size:15px; font-weight:800; color:var(--title); }
+.section-count { font-size:11px; font-weight:700; color:var(--muted);
+  background:var(--surface); border:1px solid var(--border); padding:2px 8px; border-radius:999px;
+}
 
 .card {
   border-radius:18px; border:1px solid var(--border); background:var(--surface);
@@ -500,6 +509,30 @@ function render(){
     return;
   }
   const label=st.filtros.q ? resultados.length+' resultado'+(resultados.length!==1?'s':'') : resultados.length+' tutorial'+(resultados.length!==1?'es':'');
+
+  // Vista índice: sin búsqueda ni filtro de categoría → agrupar por categoría
+  const cats=[...new Set(publicados.map(t=>t.categoria).filter(Boolean))];
+  const usarIndice = !st.filtros.q && !st.filtros.cat && cats.length>=1;
+  if(usarIndice){
+    cats.sort((a,b)=>(st.categoryIdx[a]?.orden||99)-(st.categoryIdx[b]?.orden||99));
+    let html='<div class="result-count">'+label+'</div>';
+    for(const cid of cats){
+      const grupo=resultados.filter(t=>t.categoria===cid);
+      if(!grupo.length) continue;
+      const c=st.categoryIdx[cid]||{};
+      html+='<section class="section"><div class="section-header">'+
+        (c.icono?'<span class="section-icon">'+esc(c.icono)+'</span>':'')+
+        '<span class="section-title">'+esc(c.nombre||cid)+'</span>'+
+        '<span class="section-count">'+grupo.length+'</span></div>'+
+        '<div class="result-list">'+grupo.map(t=>cardHTML(t,qterms)).join('')+'</div></section>';
+    }
+    // sin categoría
+    const sinCat=resultados.filter(t=>!t.categoria);
+    if(sinCat.length) html+='<section class="section"><div class="section-header"><span class="section-title">Otros</span><span class="section-count">'+sinCat.length+'</span></div><div class="result-list">'+sinCat.map(t=>cardHTML(t,qterms)).join('')+'</div></section>';
+    main.innerHTML=html;
+    return;
+  }
+
   main.innerHTML='<div class="result-count">'+label+'</div><div class="result-list">'+resultados.map(t=>cardHTML(t,qterms)).join('')+'</div>';
 }
 
