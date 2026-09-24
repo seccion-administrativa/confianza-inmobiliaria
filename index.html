@@ -113,6 +113,25 @@ html[data-theme="light"] .logo { filter:none; }
 }
 .chip.active { border-color:var(--accent); background:color-mix(in srgb, var(--accent) 16%, transparent); color:var(--accent); }
 
+.install-banner { display:none; align-items:center; gap:12px; margin:14px 20px 0; padding:12px 14px;
+  border-radius:14px; position:relative; overflow:hidden; animation:fadeUp .5s var(--ease-out) both;
+  background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 18%, var(--surface)), var(--surface) 70%);
+  border:1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+}
+.install-banner.show { display:flex; }
+.install-icon { font-size:26px; line-height:1; }
+.install-text { flex:1; display:flex; flex-direction:column; gap:2px; min-width:0; }
+.install-text strong { font-size:13.5px; font-weight:800; color:var(--title); }
+.install-text span { font-size:11px; color:var(--muted); }
+.install-go { padding:9px 16px; min-height:auto; font-size:13px; flex-shrink:0; }
+.install-close { width:28px; height:28px; flex-shrink:0; border:none; background:transparent; color:var(--muted);
+  font-size:20px; cursor:pointer; border-radius:8px; display:flex; align-items:center; justify-content:center;
+}
+.install-close:active { background:var(--field); }
+.ios-steps { list-style:none; margin:0 0 20px; padding:0; }
+.ios-steps li { display:flex; align-items:flex-start; gap:12px; margin-bottom:14px; font-size:14px; color:var(--txt); line-height:1.4; }
+.ios-step-num { flex-shrink:0; width:26px; height:26px; border-radius:50%; background:var(--accent); color:var(--accent-ink);
+  font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; }
 .cat-select { position:relative; margin:14px 20px 4px; z-index:60; }
 .cat-toggle { width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px;
   padding:12px 15px; border-radius:12px; border:1px solid var(--border); background:var(--surface);
@@ -401,6 +420,16 @@ footer a { color:var(--accent); text-decoration:none; font-weight:700; }
     <div class="suggest" id="suggest"></div>
   </header>
 
+  <div class="install-banner" id="installBanner">
+    <span class="install-icon">📲</span>
+    <div class="install-text">
+      <strong>Instala la app</strong>
+      <span>Acceso directo desde tu pantalla de inicio</span>
+    </div>
+    <button class="btn btn-primary install-go" id="installGo">Instalar</button>
+    <button class="install-close" id="installClose" aria-label="Descartar">×</button>
+  </div>
+
   <div class="cat-select" id="catSelect">
     <button class="cat-toggle" id="catToggle" aria-haspopup="listbox" aria-expanded="false">
       <span id="catToggleLabel">Todas las categorías</span>
@@ -437,6 +466,18 @@ footer a { color:var(--accent); text-decoration:none; font-weight:700; }
     </div>
     <button class="btn btn-primary" style="width:100%; margin-bottom:12px; display:none;" id="installBtn">📲 Instalar app</button>
     <button class="btn" style="width:100%;" id="closeSettings">Cerrar</button>
+  </div>
+</div>
+
+<div class="modal" id="iosModal" role="dialog" aria-modal="true" aria-label="Instalar en iPhone">
+  <div class="modal-content">
+    <h2 class="modal-h2">Instalar en iPhone</h2>
+    <ol class="ios-steps">
+      <li><span class="ios-step-num">1</span><span>Toca el botón <strong>Compartir</strong> <span style="font-size:16px">⎋</span> en la barra de Safari (abajo).</span></li>
+      <li><span class="ios-step-num">2</span><span>Desliza y toca <strong>“Agregar a pantalla de inicio”</strong>.</span></li>
+      <li><span class="ios-step-num">3</span><span>Toca <strong>Agregar</strong>. ¡Listo! El ícono queda en tu pantalla.</span></li>
+    </ol>
+    <button class="btn btn-primary" style="width:100%" id="iosClose">Entendido</button>
   </div>
 </div>
 
@@ -931,6 +972,7 @@ document.addEventListener('keydown',e=>{
   }
   if(e.key==='Escape'){
     if(document.getElementById('catSelect').classList.contains('open')){ closeCatPanel(); return; }
+    if(document.getElementById('iosModal').classList.contains('open')){ document.getElementById('iosModal').classList.remove('open'); return; }
     if(document.getElementById('settingsModal').classList.contains('open')){ document.getElementById('settingsModal').classList.remove('open'); return; }
     if(document.getElementById('ficha').classList.contains('open')){ history.back(); return; }
     if(st.filtros.q||st.filtros.cat) clearSearch();
@@ -939,11 +981,41 @@ document.addEventListener('keydown',e=>{
 
 window.addEventListener('popstate',handleHash);
 
-window.addEventListener('beforeinstallprompt',e=>{
-  e.preventDefault(); st.install=e;
-  const b=document.getElementById('installBtn'); b.style.display='flex';
-  b.addEventListener('click',async()=>{ if(st.install){ st.install.prompt(); await st.install.userChoice; st.install=null; b.style.display='none'; } });
+// ---------- instalación PWA ----------
+function isStandalone(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true;
+}
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+function installDismissed(){ try{ return localStorage.getItem('confianza_tut_install_dismiss')==='1'; }catch{ return false; } }
+function updateInstallUI(){
+  const banner=document.getElementById('installBanner');
+  const modalBtn=document.getElementById('installBtn');
+  const puede = !isStandalone() && (st.install || isIOS);
+  banner.classList.toggle('show', !!(puede && !installDismissed()));
+  if(modalBtn) modalBtn.style.display = puede ? 'flex' : 'none';
+}
+function doInstall(){
+  if(st.install){
+    st.install.prompt();
+    st.install.userChoice.then(()=>{ st.install=null; updateInstallUI(); });
+  } else if(isIOS){
+    document.getElementById('iosModal').classList.add('open');
+  } else {
+    toast('Usa el menú del navegador para instalar');
+  }
+}
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); st.install=e; updateInstallUI(); });
+window.addEventListener('appinstalled',()=>{ st.install=null; updateInstallUI(); toast('App instalada ✓'); });
+window.matchMedia('(display-mode: standalone)').addEventListener?.('change', updateInstallUI);
+document.getElementById('installGo').addEventListener('click',doInstall);
+document.getElementById('installBtn')?.addEventListener('click',doInstall);
+document.getElementById('installClose').addEventListener('click',()=>{
+  try{ localStorage.setItem('confianza_tut_install_dismiss','1'); }catch{}
+  updateInstallUI();
 });
+document.getElementById('iosClose').addEventListener('click',()=>document.getElementById('iosModal').classList.remove('open'));
+document.getElementById('iosModal').addEventListener('click',e=>{ if(e.target.id==='iosModal') e.target.classList.remove('open'); });
+updateInstallUI();
 
 // ---------- init ----------
 loadConfig();
