@@ -72,12 +72,11 @@ echo.
 echo ╔════════════════════════════════════════════════╗
 echo ║  ✅ PUSH COMPLETADO                           ║
 echo ║                                                ║
-echo ║  La app estará en vivo en:                    ║
-echo ║  https://seccion-administrativa.github.io/confianza-inmobiliaria     ║
-echo ║  tutoriales/                                  ║
-echo ║                                                ║
-echo ║  (Espera 2-3 minutos para que GitHub         ║
-echo ║   active GitHub Pages)                        ║
+echo.
+echo   La app se actualiza en:
+echo   https://seccion-administrativa.github.io/confianza-inmobiliaria/
+echo.
+echo   (Espera 1-2 minutos para que GitHub actualice)
 echo ╚════════════════════════════════════════════════╝
 echo.
 pause
