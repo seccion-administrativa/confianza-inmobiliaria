@@ -1,13 +1,49 @@
 {
-  "version": 2,
+  "version": 3,
   "actualizado": "2026-09-24T11:00:00-03:00",
   "categorias": [
-    {"id": "captacion", "nombre": "Captación y leads", "orden": 1, "icono": "🎯", "sub": []},
-    {"id": "cotizacion", "nombre": "Cotización", "orden": 2, "icono": "🧮", "sub": []},
-    {"id": "visitas", "nombre": "Visitas y accesos", "orden": 3, "icono": "📅", "sub": []},
-    {"id": "evaluacion", "nombre": "Evaluación y postulación", "orden": 4, "icono": "📋", "sub": []},
-    {"id": "cierre", "nombre": "Cierre y post-venta", "orden": 5, "icono": "✅", "sub": []},
-    {"id": "documentos", "nombre": "Documentos de apoyo", "orden": 6, "icono": "📄", "sub": []}
+    {
+      "id": "captacion",
+      "nombre": "Captación y leads",
+      "orden": 1,
+      "icono": "🎯",
+      "sub": []
+    },
+    {
+      "id": "cotizacion",
+      "nombre": "Cotización",
+      "orden": 2,
+      "icono": "🧮",
+      "sub": []
+    },
+    {
+      "id": "visitas",
+      "nombre": "Visitas y accesos",
+      "orden": 3,
+      "icono": "📅",
+      "sub": []
+    },
+    {
+      "id": "evaluacion",
+      "nombre": "Evaluación y postulación",
+      "orden": 4,
+      "icono": "📋",
+      "sub": []
+    },
+    {
+      "id": "cierre",
+      "nombre": "Cierre y post-venta",
+      "orden": 5,
+      "icono": "✅",
+      "sub": []
+    },
+    {
+      "id": "documentos",
+      "nombre": "Documentos de apoyo",
+      "orden": 6,
+      "icono": "📄",
+      "sub": []
+    }
   ],
   "tutoriales": [
     {
@@ -17,10 +53,27 @@
       "descripcion": "Registra un nuevo lead o prospecto en la plataforma para empezar a gestionar al cliente.",
       "categoria": "captacion",
       "tipo": "video",
-      "etiquetas": ["lead", "prospecto", "captación"],
-      "palabras_clave": ["cliente", "contacto", "registrar", "crear"],
-      "video": {"proveedor": "drive", "id": "19BDqOnd3FvzZp0VqC263org63z8BMzlL"},
-      "duracion_seg": null, "fecha": "2026-07-06", "orden": 1, "estado": "publicado", "thumbnail": null, "destacado": true
+      "etiquetas": [
+        "lead",
+        "prospecto",
+        "captación"
+      ],
+      "palabras_clave": [
+        "cliente",
+        "contacto",
+        "registrar",
+        "crear"
+      ],
+      "video": {
+        "proveedor": "local",
+        "src": "videos/tut-lead.mp4"
+      },
+      "duracion_seg": 29,
+      "fecha": "2026-07-06",
+      "orden": 1,
+      "estado": "publicado",
+      "thumbnail": "thumbs/tut-lead.webp",
+      "destacado": true
     },
     {
       "id": "tut-promocionar",
@@ -29,10 +82,27 @@
       "descripcion": "Primeros pasos para publicar y promocionar los departamentos disponibles.",
       "categoria": "captacion",
       "tipo": "video",
-      "etiquetas": ["promoción", "publicar", "deptos"],
-      "palabras_clave": ["departamentos", "difundir", "vacios", "promocionar"],
-      "video": {"proveedor": "drive", "id": "166SK90VyEFskaTMyjPZusV2g3vcrjF1g"},
-      "duracion_seg": null, "fecha": "2026-07-06", "orden": 2, "estado": "publicado", "thumbnail": null, "destacado": false
+      "etiquetas": [
+        "promoción",
+        "publicar",
+        "deptos"
+      ],
+      "palabras_clave": [
+        "departamentos",
+        "difundir",
+        "vacios",
+        "promocionar"
+      ],
+      "video": {
+        "proveedor": "local",
+        "src": "videos/tut-promocionar.mp4"
+      },
+      "duracion_seg": 315,
+      "fecha": "2026-07-06",
+      "orden": 2,
+      "estado": "publicado",
+      "thumbnail": "thumbs/tut-promocionar.webp",
+      "destacado": false
     },
     {
       "id": "tut-cotizacion",
@@ -41,10 +111,27 @@
       "descripcion": "Genera la cotización de arriendo y conoce los detalles clave que debes manejar.",
       "categoria": "cotizacion",
       "tipo": "video",
-      "etiquetas": ["cotización", "arriendo", "precio"],
-      "palabras_clave": ["cotizar", "valores", "generar", "cotizacion"],
-      "video": {"proveedor": "drive", "id": "12b0rKdyhKpl_iFtWioZHKVgXT_A9RueM"},
-      "duracion_seg": null, "fecha": "2026-07-06", "orden": 1, "estado": "publicado", "thumbnail": null, "destacado": true
+      "etiquetas": [
+        "cotización",
+        "arriendo",
+        "precio"
+      ],
+      "palabras_clave": [
+        "cotizar",
+        "valores",
+        "generar",
+        "cotizacion"
+      ],
+      "video": {
+        "proveedor": "local",
+        "src": "videos/tut-cotizacion.mp4"
+      },
+      "duracion_seg": 289,
+      "fecha": "2026-07-06",
+      "orden": 1,
+      "estado": "publicado",
+      "thumbnail": "thumbs/tut-cotizacion.webp",
+      "destacado": true
     },
     {
       "id": "tut-visita",
@@ -53,10 +140,27 @@
       "descripcion": "Agenda una visita a un departamento para un cliente interesado.",
       "categoria": "visitas",
       "tipo": "video",
-      "etiquetas": ["visita", "agenda", "cita"],
-      "palabras_clave": ["agendar", "programar", "reunión", "visitar"],
-      "video": {"proveedor": "drive", "id": "1rowJ5OgqfRteb8eSpKO7FMkstg3fpWcU"},
-      "duracion_seg": null, "fecha": "2026-07-06", "orden": 1, "estado": "publicado", "thumbnail": null, "destacado": false
+      "etiquetas": [
+        "visita",
+        "agenda",
+        "cita"
+      ],
+      "palabras_clave": [
+        "agendar",
+        "programar",
+        "reunión",
+        "visitar"
+      ],
+      "video": {
+        "proveedor": "local",
+        "src": "videos/tut-visita.mp4"
+      },
+      "duracion_seg": 47,
+      "fecha": "2026-07-06",
+      "orden": 1,
+      "estado": "publicado",
+      "thumbnail": "thumbs/tut-visita.webp",
+      "destacado": false
     },
     {
       "id": "tut-candado",
@@ -65,10 +169,27 @@
       "descripcion": "Instrucciones para abrir el candado de acceso a los departamentos en Conchalí.",
       "categoria": "visitas",
       "tipo": "video",
-      "etiquetas": ["candado", "acceso", "conchalí"],
-      "palabras_clave": ["llave", "abrir", "ingresar", "candado"],
-      "video": {"proveedor": "drive", "id": "1-Ub_xihFCY_hLO6Rj2snbcUuXj1sUhkE"},
-      "duracion_seg": null, "fecha": "2026-07-06", "orden": 2, "estado": "publicado", "thumbnail": null, "destacado": false
+      "etiquetas": [
+        "candado",
+        "acceso",
+        "conchalí"
+      ],
+      "palabras_clave": [
+        "llave",
+        "abrir",
+        "ingresar",
+        "candado"
+      ],
+      "video": {
+        "proveedor": "local",
+        "src": "videos/tut-candado.mp4"
+      },
+      "duracion_seg": 15,
+      "fecha": "2026-07-06",
+      "orden": 2,
+      "estado": "publicado",
+      "thumbnail": "thumbs/tut-candado.webp",
+      "destacado": false
     },
     {
       "id": "tut-postular",
@@ -77,10 +198,27 @@
       "descripcion": "Realiza la postulación de un cliente a un departamento en arriendo.",
       "categoria": "evaluacion",
       "tipo": "video",
-      "etiquetas": ["postulación", "postular", "depto"],
-      "palabras_clave": ["postulante", "aplicar", "solicitud", "postular"],
-      "video": {"proveedor": "drive", "id": "1hxy3lIOEyIiL3KTe_XgnF8o_4zUUdI4p"},
-      "duracion_seg": null, "fecha": "2026-07-06", "orden": 1, "estado": "publicado", "thumbnail": null, "destacado": false
+      "etiquetas": [
+        "postulación",
+        "postular",
+        "depto"
+      ],
+      "palabras_clave": [
+        "postulante",
+        "aplicar",
+        "solicitud",
+        "postular"
+      ],
+      "video": {
+        "proveedor": "local",
+        "src": "videos/tut-postular.mp4"
+      },
+      "duracion_seg": 86,
+      "fecha": "2026-07-06",
+      "orden": 1,
+      "estado": "publicado",
+      "thumbnail": "thumbs/tut-postular.webp",
+      "destacado": false
     },
     {
       "id": "tut-evaluar",
@@ -89,10 +227,27 @@
       "descripcion": "Evalúa la ficha y los antecedentes de un cliente postulante al arriendo.",
       "categoria": "evaluacion",
       "tipo": "video",
-      "etiquetas": ["evaluación", "cliente", "antecedentes"],
-      "palabras_clave": ["evaluar", "calificar", "revisar", "postulante"],
-      "video": {"proveedor": "drive", "id": "1J5rHzSB1iXoDDPMKqPxe2WQpYYtpVgTl"},
-      "duracion_seg": null, "fecha": "2026-07-06", "orden": 2, "estado": "publicado", "thumbnail": null, "destacado": true
+      "etiquetas": [
+        "evaluación",
+        "cliente",
+        "antecedentes"
+      ],
+      "palabras_clave": [
+        "evaluar",
+        "calificar",
+        "revisar",
+        "postulante"
+      ],
+      "video": {
+        "proveedor": "local",
+        "src": "videos/tut-evaluar.mp4"
+      },
+      "duracion_seg": 67,
+      "fecha": "2026-07-06",
+      "orden": 2,
+      "estado": "publicado",
+      "thumbnail": "thumbs/tut-evaluar.webp",
+      "destacado": true
     },
     {
       "id": "tut-aval",
@@ -101,10 +256,27 @@
       "descripcion": "Agrega un aval y genera el link para que el postulante se evalúe en la plataforma.",
       "categoria": "evaluacion",
       "tipo": "video",
-      "etiquetas": ["aval", "evaluación", "link"],
-      "palabras_clave": ["codeudor", "garante", "postulante", "evaluar"],
-      "video": {"proveedor": "drive", "id": "1dALtjISFgqa2dbbr3CmyxlF4yTJWEtvT"},
-      "duracion_seg": null, "fecha": "2026-08-24", "orden": 3, "estado": "publicado", "thumbnail": null, "destacado": false
+      "etiquetas": [
+        "aval",
+        "evaluación",
+        "link"
+      ],
+      "palabras_clave": [
+        "codeudor",
+        "garante",
+        "postulante",
+        "evaluar"
+      ],
+      "video": {
+        "proveedor": "local",
+        "src": "videos/tut-aval.mp4"
+      },
+      "duracion_seg": 112,
+      "fecha": "2026-08-24",
+      "orden": 3,
+      "estado": "publicado",
+      "thumbnail": "thumbs/tut-aval.webp",
+      "destacado": false
     },
     {
       "id": "tut-aprobacion",
@@ -113,10 +285,27 @@
       "descripcion": "Pasos a seguir una vez que el cliente ha sido aprobado para el arriendo.",
       "categoria": "cierre",
       "tipo": "video",
-      "etiquetas": ["aprobación", "cierre", "contrato"],
-      "palabras_clave": ["aprobado", "siguiente", "firma", "aprobacion"],
-      "video": {"proveedor": "drive", "id": "1WaBFvaFf4wqTKNj1sORo9cXIV96urZ18"},
-      "duracion_seg": null, "fecha": "2026-07-06", "orden": 1, "estado": "publicado", "thumbnail": null, "destacado": true
+      "etiquetas": [
+        "aprobación",
+        "cierre",
+        "contrato"
+      ],
+      "palabras_clave": [
+        "aprobado",
+        "siguiente",
+        "firma",
+        "aprobacion"
+      ],
+      "video": {
+        "proveedor": "local",
+        "src": "videos/tut-aprobacion.mp4"
+      },
+      "duracion_seg": 33,
+      "fecha": "2026-07-06",
+      "orden": 1,
+      "estado": "publicado",
+      "thumbnail": "thumbs/tut-aprobacion.webp",
+      "destacado": true
     },
     {
       "id": "tut-boletas",
@@ -125,10 +314,27 @@
       "descripcion": "Genera las boletas usando el hipervínculo correspondiente.",
       "categoria": "cierre",
       "tipo": "video",
-      "etiquetas": ["boletas", "hipervínculo", "pago"],
-      "palabras_clave": ["boleta", "facturar", "enlace", "boletas"],
-      "video": {"proveedor": "drive", "id": "1dmF6GRDOCARZEU7SSRcxLoqUXkTjwcK_"},
-      "duracion_seg": null, "fecha": "2026-07-06", "orden": 2, "estado": "publicado", "thumbnail": null, "destacado": false
+      "etiquetas": [
+        "boletas",
+        "hipervínculo",
+        "pago"
+      ],
+      "palabras_clave": [
+        "boleta",
+        "facturar",
+        "enlace",
+        "boletas"
+      ],
+      "video": {
+        "proveedor": "local",
+        "src": "videos/tut-boletas.mp4"
+      },
+      "duracion_seg": 75,
+      "fecha": "2026-07-06",
+      "orden": 2,
+      "estado": "publicado",
+      "thumbnail": "thumbs/tut-boletas.webp",
+      "destacado": false
     },
     {
       "id": "doc-documentacion",
@@ -138,10 +344,27 @@
       "categoria": "documentos",
       "tipo": "documento",
       "formato": "docx",
-      "etiquetas": ["documentación", "requisitos", "cliente"],
-      "palabras_clave": ["documentos", "papeles", "requisitos", "antecedentes"],
-      "video": {"proveedor": "drive", "id": "1BccO1lxNvknoWDjWzwtUKFSVRzHebjgc"},
-      "duracion_seg": null, "fecha": "2026-07-06", "orden": 1, "estado": "publicado", "thumbnail": null, "destacado": false
+      "etiquetas": [
+        "documentación",
+        "requisitos",
+        "cliente"
+      ],
+      "palabras_clave": [
+        "documentos",
+        "papeles",
+        "requisitos",
+        "antecedentes"
+      ],
+      "video": {
+        "proveedor": "drive",
+        "id": "1BccO1lxNvknoWDjWzwtUKFSVRzHebjgc"
+      },
+      "duracion_seg": null,
+      "fecha": "2026-07-06",
+      "orden": 1,
+      "estado": "publicado",
+      "thumbnail": null,
+      "destacado": false
     },
     {
       "id": "doc-sin-carnet",
@@ -151,10 +374,27 @@
       "categoria": "documentos",
       "tipo": "documento",
       "formato": "docx",
-      "etiquetas": ["extranjero", "carnet", "procedimiento"],
-      "palabras_clave": ["cédula", "pasaporte", "sin carnet", "extranjero"],
-      "video": {"proveedor": "drive", "id": "138VH2ZnAutKBwGyWNqXUt88naJjzcwPe"},
-      "duracion_seg": null, "fecha": "2026-07-06", "orden": 2, "estado": "publicado", "thumbnail": null, "destacado": false
+      "etiquetas": [
+        "extranjero",
+        "carnet",
+        "procedimiento"
+      ],
+      "palabras_clave": [
+        "cédula",
+        "pasaporte",
+        "sin carnet",
+        "extranjero"
+      ],
+      "video": {
+        "proveedor": "drive",
+        "id": "138VH2ZnAutKBwGyWNqXUt88naJjzcwPe"
+      },
+      "duracion_seg": null,
+      "fecha": "2026-07-06",
+      "orden": 2,
+      "estado": "publicado",
+      "thumbnail": null,
+      "destacado": false
     },
     {
       "id": "doc-telefonos",
@@ -164,10 +404,27 @@
       "categoria": "documentos",
       "tipo": "documento",
       "formato": "pdf",
-      "etiquetas": ["teléfonos", "contactos", "edificios"],
-      "palabras_clave": ["fono", "jefe", "conserje", "contacto"],
-      "video": {"proveedor": "drive", "id": "1vcuOvzVdjbFcSCktmNtjRwoPv5fYmiGY"},
-      "duracion_seg": null, "fecha": "2026-07-06", "orden": 3, "estado": "publicado", "thumbnail": null, "destacado": false
+      "etiquetas": [
+        "teléfonos",
+        "contactos",
+        "edificios"
+      ],
+      "palabras_clave": [
+        "fono",
+        "jefe",
+        "conserje",
+        "contacto"
+      ],
+      "video": {
+        "proveedor": "drive",
+        "id": "1vcuOvzVdjbFcSCktmNtjRwoPv5fYmiGY"
+      },
+      "duracion_seg": null,
+      "fecha": "2026-07-06",
+      "orden": 3,
+      "estado": "publicado",
+      "thumbnail": null,
+      "destacado": false
     }
   ]
 }

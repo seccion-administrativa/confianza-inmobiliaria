@@ -329,6 +329,8 @@ html[data-theme="light"] .logo { filter:none; }
   box-shadow:0 24px 60px -28px rgba(0,0,0,.9), 0 0 40px -30px color-mix(in srgb, var(--accent) 90%, transparent);
 }
 .player iframe { width:100%; height:100%; border:none; display:block; }
+.player video { width:100%; height:100%; object-fit:contain; background:#000; display:block; }
+.player:fullscreen video { object-fit:contain; }
 .player-facade { position:absolute; inset:0; cursor:pointer; display:flex; align-items:center; justify-content:center;
   background-size:cover; background-position:center; transition:filter 300ms;
 }
@@ -743,22 +745,31 @@ function openFicha(id, push=true){
   const t=st.tutoriales.find(x=>x.id===id); if(!t) return;
   st.scrollY=window.scrollY;
   const pc=document.getElementById('playerContainer');
-  const src=iframeSrc(t.video);
   const esDoc=t.tipo==='documento';
-  if(src){
-    // Facade: iframe solo al tocar
-    if(esDoc){
-      pc.innerHTML='<div class="player-facade" id="facade" style="flex-direction:column;gap:10px;background:linear-gradient(135deg,#1d2228,#111418)"><span style="font-size:56px">'+docIcon(t.formato)+'</span><span style="color:#fff;font-weight:700;font-size:14px">Ver documento</span></div>';
-    } else if(t.thumbnail){
-      pc.innerHTML='<div class="player-facade" id="facade" style="background-image:url(\''+esc(t.thumbnail)+'\')"><span class="play-badge"></span></div>';
-    } else {
-      pc.innerHTML='<div class="player-facade vid-ph" id="facade"><span class="play-badge"></span></div>';
-    }
+  if(t.video && t.video.proveedor==='local' && t.video.src){
+    // Video nativo: facade con poster; <video> al tocar (fullscreen real, sin branding)
+    const poster=t.thumbnail||'';
+    pc.innerHTML='<div class="player-facade'+(poster?'':' vid-ph')+'" id="facade"'+(poster?' style="background-image:url(\''+esc(poster)+'\')"':'')+'><span class="play-badge"></span></div>';
     document.getElementById('facade').addEventListener('click',()=>{
-      pc.innerHTML='<iframe src="'+esc(src)+'" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+      pc.innerHTML='<video controls autoplay playsinline preload="metadata" poster="'+esc(poster)+'" style="width:100%;height:100%;background:#000;display:block"><source src="'+esc(t.video.src)+'" type="video/mp4">Tu navegador no soporta el video.</video>';
+      const v=pc.querySelector('video'); if(v){ v.focus(); v.play().catch(()=>{}); }
     });
   } else {
-    pc.innerHTML='<div class="player-facade" style="cursor:default"><span style="color:#fff;font-size:13px;text-align:center;padding:20px">Contenido no disponible</span></div>';
+    const src=iframeSrc(t.video);
+    if(src){
+      if(esDoc){
+        pc.innerHTML='<div class="player-facade" id="facade" style="flex-direction:column;gap:10px;background:linear-gradient(135deg,#1d2228,#111418)"><span style="font-size:56px">'+docIcon(t.formato)+'</span><span style="color:#fff;font-weight:700;font-size:14px">Ver documento</span></div>';
+      } else if(t.thumbnail){
+        pc.innerHTML='<div class="player-facade" id="facade" style="background-image:url(\''+esc(t.thumbnail)+'\')"><span class="play-badge"></span></div>';
+      } else {
+        pc.innerHTML='<div class="player-facade vid-ph" id="facade"><span class="play-badge"></span></div>';
+      }
+      document.getElementById('facade').addEventListener('click',()=>{
+        pc.innerHTML='<iframe src="'+esc(src)+'" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+      });
+    } else {
+      pc.innerHTML='<div class="player-facade" style="cursor:default"><span style="color:#fff;font-size:13px;text-align:center;padding:20px">Contenido no disponible</span></div>';
+    }
   }
 
   document.getElementById('fichaTitle').textContent=t.titulo;
